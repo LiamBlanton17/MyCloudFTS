@@ -1,0 +1,21 @@
+.main-container {
+  display: grid;
+  place-items: center;
+}
+
+.login-row {
+  padding-top: 20px;
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-bottom: 20px;
+  text-align: center;
+  background-color: #E9B44C;
+}
+
+.login-label {
+  text-align: right;
+}
+
+#page-body {
+  background-color: #96BBBB;
+}
