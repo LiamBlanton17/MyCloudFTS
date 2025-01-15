@@ -1,19 +1,37 @@
 .main-container {
   display: grid;
   place-items: center;
+  background-color: #E9B44C;
+}
+
+.header-row {
+  margin: 20px 100px 20px 100px;
 }
 
 .login-row {
-  padding-top: 20px;
-  padding-left: 100px;
-  padding-right: 100px;
-  padding-bottom: 20px;
+  margin: 20px 100px 20px 100px;
   text-align: center;
-  background-color: #E9B44C;
 }
 
 .login-label {
   text-align: right;
+}
+
+.signup-row {
+  margin: 20px 100px 20px 100px;
+  text-align: center;
+}
+
+.signup-label {
+  margin-bottom: 10px;
+}
+
+.subheader-content {
+  text-align: center;
+} 
+
+.footer-row {
+  margin: 20px 100px 20px 100px;
 }
 
 #page-body {
