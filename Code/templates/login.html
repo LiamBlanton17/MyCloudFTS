@@ -17,7 +17,18 @@
     />
 
     <!-- Custom CSS -->
-    <!-- {% load static %} -->
+
+    <!-- 
+    This is the style required to load the CSS when the django server is running.
+    Comment out when needed. It's fine to leave both, just throws error in js console.
+    -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+    <!-- 
+    This is the style for when staticly editting the page.
+    Comment out when needed. It's fine to leave both, just throws error in js console.
+     -->
     <link rel="stylesheet" href="/Code/static/css/login.css" />
 
     <title>MyCloudFMI Login</title>
