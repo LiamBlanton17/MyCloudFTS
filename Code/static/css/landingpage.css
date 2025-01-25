@@ -1,0 +1,213 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+#nav-links {
+  display: flex;
+  gap: 1rem;
+  padding-right: 1rem;
+}
+
+#nav-links > a {
+  text-decoration: none;
+  color: black;
+  position: relative;
+}
+
+#nav-links > a:hover {
+  text-decoration: underline;
+  color: black;
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: black; /* Your desired line color */
+  transform: scaleX(0); /* Initially hide the line */
+  transition: transform 0.3s ease; /* Smooth transition on hover */
+}
+
+a:hover::after {
+  transform: scaleX(1); /* Show the line on hover */
+}
+
+h1 {
+  font-size: 6.5vh;
+}
+
+h2 {
+  font-size: 3.5vh;
+}
+
+#hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  text-align: center;
+}
+
+#hero-sub {
+  color: #2d2d2d;
+  margin-top: -13px;
+  justify-content: center;
+  text-align: center;
+  font-size: 2.3vh;
+  line-height: 140%;
+}
+
+.primary-button {
+  color: white;
+  border-width: 1px;
+  background-color: black;
+  border-radius: 12px;
+  padding: 10px 30px 10px 30px;
+  height: auto;
+}
+
+.primary-button:hover {
+  background-color: rgb(30, 30, 30);
+}
+
+.secondary-button {
+  border: solid;
+  border-width: 1px;
+  border-color: gray;
+  color: black;
+  background-color: white;
+  border-radius: 12px;
+  padding: 10px 30px 10px 30px;
+  height: auto;
+  text-decoration: none;
+}
+
+.secondary-button:hover {
+  background-color: rgb(237, 237, 237);
+}
+
+#features {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 40vh;
+  padding: 1rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+#feature-title {
+  justify-self: center;
+}
+
+#feature-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.feature-cards {
+  border-radius: 12px;
+  border: 0.5px solid gray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.feature-card-title {
+  font-weight: bold;
+}
+
+.gray {
+  background-color: rgb(231, 231, 231);
+}
+
+#icp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem;
+}
+
+#pros {
+  display: flex;
+  flex-direction: row;
+  gap: 10rem;
+}
+
+#filetypes {
+  height: 40vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+#file-card-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.file-cards {
+  background-color: white;
+  padding-left: 20px;
+  width: 25vw;
+  border-radius: 12px;
+}
+
+.file-card-title {
+  font-weight: bold;
+}
+
+.file-card-text {
+  font-size: small;
+}
+
+#CTA {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem;
+}
+
+.cta-text {
+  color: #2d2d2d;
+}
+
+hr {
+  border: 1px solid gray;
+}
+
+footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+#legal-links {
+  display: flex;
+  gap: 1rem;
+  padding-right: 1rem;
+}
