@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+
+    <!-- Custom CSS -->
+
+    <!-- 
+    This is the style required to load the CSS when the django server is running.
+    Comment out when needed. It's fine to leave both, just throws error in js console.
+    -->
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+
+    <!-- 
+    This is the style for when staticly editting the page.
+    Comment out when needed. It's fine to leave both, just throws error in js console.
+     -->
+     <link rel="stylesheet" href="/MyCloudFMI/Code/static/css/signup.css" />
+    
+    <title>Sign Up</title>
+</head>
+<body>
+   <div class="form-box">
+    <h1>Create an account</h1>
+
+        <form class ="form" action="#">
+                <label for="firstname">First Name</label> 
+                <input name="firstname" id="firstname" required> 
+
+                <label for="lastname">Last Name</label> 
+                <input name="lastname" id="lastname" required> 
+
+                <label for="email">Email</label> 
+                <input type="email" id="email" name="email" required> 
+
+                <label for="password">Password</label> 
+                <input type="password" name="password" required> 
+        </form>
+
+        <input type="checkbox" id="terms" name="terms" required> 
+        <label class="terms" for="terms">I accept the terms and privacy policy</label><br>
+
+        <button class="signup-btn" type="submit">Sign Up</button>
+
+        <p class="signin">Already have an account?
+            <a class="signin-link" href="login.html">Sign in</a>
+        </p>        
+        
+   </div> 
+</body>
+</html>
