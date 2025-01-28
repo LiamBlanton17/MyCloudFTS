@@ -25,7 +25,7 @@
     This is the style for when staticly editting the page.
     Comment out when needed. It's fine to leave both, just throws error in js console.
      -->
-     <link rel="stylesheet" href="/MyCloudFMI/Code/static/css/signup.css" />
+     <link rel="stylesheet" href="/MyCloudFTS/Code/static/css/signup.css" />
     
     <title>Sign Up</title>
 </head>
@@ -33,7 +33,12 @@
    <div class="form-box">
     <h1>Create an account</h1>
 
-        <form class ="form" action="#">
+        <form class="form" action="#">
+                <!-- required somewhere in the html, security -->
+                {% csrf_token %}
+                <label for="company">Company</label> 
+                <input name="company" id="company" required> 
+
                 <label for="firstname">First Name</label> 
                 <input name="firstname" id="firstname" required> 
 
@@ -44,18 +49,102 @@
                 <input type="email" id="email" name="email" required> 
 
                 <label for="password">Password</label> 
-                <input type="password" name="password" required> 
+                <input type="password" id="password" name="password" required> 
         </form>
 
         <input type="checkbox" id="terms" name="terms" required> 
         <label class="terms" for="terms">I accept the terms and privacy policy</label><br>
 
-        <button class="signup-btn" type="submit">Sign Up</button>
+        <button class="signup-btn" type="submit" id="signup-submit">Sign Up</button>
 
         <p class="signin">Already have an account?
             <a class="signin-link" href="login.html">Sign in</a>
         </p>        
         
    </div> 
+   <!-- Below is the JS to send the form to the backend -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+    //django docs provided this, even though it looks wacky. Probably a library for it?
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function validateForm(){
+        if(!$("#company").val()){
+            alert("Company name missing!");
+            $("#company").focus();
+            return 0;
+        }
+        if(!$("#firstname").val()){
+            alert("First name missing!");
+            $("#firstname").focus();
+            return 0;
+        }
+        if(!$("#lastname").val()){
+            alert("Last name missing!");
+            $("#lastname").focus();
+            return 0;
+        }
+        if(!$("#email").val()){
+            alert("Email missing!");
+            $("#email").focus();
+            return 0;
+        }
+        if(!$("#password").val()){
+            alert("Password name missing!");
+            $("#password").focus();
+            return 0;
+        }
+        if(!$("#terms").is(':checked')){
+            alert("Must agree to terms!");
+            $("#terms").focus();
+            return 0;
+        }
+        return 1;
+    }
+    $(function(){
+        $('#signup-submit').on("click", function(){
+            if(!validateForm()){
+                return;
+            }
+            const data = {
+                company: $("#company").val(),
+                first_name: $("#firstname").val(),
+                last_name: $("#lastname").val(),
+                email: $("#email").val(),
+                password: $("#password").val(),
+            };
+            console.log(data);
+            $.ajax({
+                url: '/api/post/sign_up/',
+                type: 'POST',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(response) {
+                    console.log('Success:', response);
+                    alert(response.message);
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error:', error);
+                }
+            });
+        });
+    });
+   </script>
 </body>
 </html>

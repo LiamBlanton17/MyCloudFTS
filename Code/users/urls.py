@@ -7,4 +7,6 @@ urlpatterns = [
     path('landingpage.html', views.landing_page, name='landingpage'),
     path('signup.html', views.signup, name='signup'),
     path('', RedirectView.as_view(url='landingpage.html', permanent=True)),
+    # Below are api POSTS
+    path('api/post/sign_up/', views.api_sign_up, name='signup'),
 ]
