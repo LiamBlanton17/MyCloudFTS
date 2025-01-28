@@ -11,3 +11,6 @@ def home(request):
 # Create your views here.
 def landing_page(request):
     return render(request, 'landingpage.html')
+
+def signup(request):
+    return render(request, 'signup.html')
