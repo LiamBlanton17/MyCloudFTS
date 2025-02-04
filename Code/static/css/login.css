@@ -1,48 +1,37 @@
 .main-container {
   display: grid;
   place-items: center;
-  background-color: #E9B44C;
+  background-color: #e9b44c;
 }
 
 .header-row {
   margin: 20px 100px 20px 100px;
 }
 
-.login-row {
-  margin: 20px 100px 20px 100px;
-  text-align: center;
-}
-
-.login-label {
-  text-align: right;
-}
-
-.signup-row {
-  margin: 20px 100px 20px 100px;
-  text-align: center;
-}
-
+.login-row,
+.login-label,
+.signup-row,
 .signup-label {
-  margin-bottom: 10px;
+  display: none;
 }
 
 .subheader-content {
   text-align: center;
-} 
+}
 
 .footer-row {
   margin: 20px 100px 20px 100px;
 }
 
 #page-body {
-  background-color: #96BBBB;
+  background-color: #96bbbb;
 }
 
 .navbar {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding: 10px
+  padding: 10px;
 }
 
 nav li {
@@ -50,4 +39,223 @@ nav li {
   display: inline;
   padding: 10px;
   margin: 10px;
+}
+
+body {
+  font-family: "Inter", Arial, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(-45deg, #1a73e8, #34a853, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add floating circles in the background */
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  width: 1000px;
+  height: 1000px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  animation: float 20s infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+body::before {
+  top: -20%;
+  right: -20%;
+  animation-delay: 0s;
+}
+
+body::after {
+  bottom: -20%;
+  left: -20%;
+  animation-delay: -10s;
+}
+
+.login-form {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: fadeIn 1s ease-out;
+  position: relative;
+  z-index: 10;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(26, 115, 232, 0.2);
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #2d2d2d;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 11;
+}
+
+.form-control:focus {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.15);
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: #6c757d;
+  opacity: 0.7;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #1a73e8;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.mb-3 {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.btn-primary {
+  margin-top: 1rem;
+  font-size: 1rem;
+  padding: 12px 24px;
+  letter-spacing: 0.5px;
+  background: linear-gradient(45deg, #1a73e8, #34a853);
+  border: none;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #1557b0, #2d8745);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Animations */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(100px, 100px) rotate(180deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Navbar styling */
+.navbar {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Link styling */
+a {
+  color: #1a73e8;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #34a853;
+}
+
+/* Make form elements more visible on the animated background */
+.form-label {
+  color: #1a73e8;
+  font-weight: 500;
+}
+
+h2 {
+  background: linear-gradient(45deg, #1a73e8, #34a853);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* Sign up link styling */
+.text-center.mt-3 {
+  margin-top: 1.5rem !important;
+  font-size: 0.95rem;
+  color: #6c757d;
+}
+
+.text-center.mt-3 a {
+  color: #1a73e8;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.text-center.mt-3 a:hover {
+  color: #34a853;
+  text-decoration: none;
+}
+
+/* Ensure inputs are visible on mobile */
+@media (max-width: 768px) {
+  .form-control {
+    font-size: 16px; /* Prevents zoom on mobile */
+    padding: 10px 16px;
+  }
+
+  .login-form {
+    padding: 2rem;
+    margin: 1rem;
+  }
+}
+
+/* Update form container */
+.container {
+  position: relative;
+  z-index: 10;
 }
