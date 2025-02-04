@@ -9,21 +9,47 @@
     <title>MyCloudFMI - The Future of File Management</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/Code/static/css/landingpage.css" />
   </head>
   <body>
-    <nav>
-      <div id="logo">
-        <a>MyCloudFMI</a>
-      </div>
-      <div id="nav-links">
-        <a href="#features"> Features </a>
-        <a href="#icp"> Who It's For </a>
-        <a href="#filetypes"> File Types </a>
+    <!-- Updated navbar with Bootstrap classes -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <div class="container">
+        <a class="navbar-brand">MyCloudFMI</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#features">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#icp">Who It's For</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#filetypes">File Types</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
     <main>
-      <div id="hero-section">
+      <!-- Hero section with Bootstrap classes -->
+      <div id="hero-section" class="container text-center py-5 mt-5">
         <h1>Simplify Your Team's File Management</h1>
         <p id="hero-sub">
           MyCloudFMI: The cloud-based file management solution for teams who
@@ -31,110 +57,205 @@
           need simplicity and support for all file types.
         </p>
         <div class="buttons">
-          <button class="primary-button">Sign Up</button>
-          <a href="./login.html" class="secondary-button">Log In</a>
+          <button class="btn btn-primary">Sign Up</button>
+          <a href="./login.html" class="btn btn-outline-primary">Log In</a>
         </div>
       </div>
-      <div id="features" class="gray">
-        <h2 id="feature-title">Key Features</h2>
-        <div id="feature-grid">
-          <div class="feature-cards">
-            <img />
-            <p class="feature-card-title">Simple Admin System</p>
-            <p>
-              Easy-to-use administrative controls for managing team access and
-              permissions.
-            </p>
-          </div>
-          <div class="feature-cards">
-            <img />
-            <p class="feature-card-title">Wide File Type Support</p>
-            <p>
-              Support for a broad range of file types, including rare and
-              specialized formats.
-            </p>
-          </div>
-          <div class="feature-cards">
-            <img />
-            <p class="feature-card-title">Clean, Simple UI</p>
-            <p>
-              Intuitive interface designed for ease of use and quick adoption by
-              team members.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div id="icp">
-        <h2>Who It's For</h2>
-        <div id="pros">
-          <div id="top-row">
-            <div>
-              <img />
-              <p>Small to medium-sized teams</p>
+      <!-- Features section with Bootstrap grid -->
+      <div id="features" class="bg-light py-5">
+        <div class="container">
+          <h2 id="feature-title" class="text-center mb-4">Key Features</h2>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <img class="mb-3" />
+                  <h5 class="card-title">Simple Admin System</h5>
+                  <p class="card-text">
+                    Easy-to-use administrative controls for managing team access
+                    and permissions.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div>
-              <img />
-              <p>Organizations with specialized file types</p>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <img class="mb-3" />
+                  <h5 class="card-title">Wide File Type Support</h5>
+                  <p class="card-text">
+                    Support for a broad range of file types, including rare and
+                    specialized formats.
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-          <div id="bottom-row">
-            <div>
-              <img />
-              <p>Teams seeking simplicity in file management</p>
-            </div>
-            <div>
-              <img />
-              <p>Businesses avoiding complex solutions</p>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <img class="mb-3" />
+                  <h5 class="card-title">Clean, Simple UI</h5>
+                  <p class="card-text">
+                    Intuitive interface designed for ease of use and quick
+                    adoption by team members.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div id="filetypes" class="gray">
-        <h2>Supported File Types</h2>
-        <div id="file-card-grid">
-          <div class="file-cards">
-            <p class="file-card-title">Common Types</p>
-            <p class="file-card-text">
-              .doc, .docx, .pdf, .jpg, .png, .mp3, .mp4, and more
-            </p>
+      <!-- Who It's For section with Bootstrap grid -->
+      <div id="icp" class="container py-5">
+        <h2 class="text-center mb-4">Who It's For</h2>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <img class="mb-3" />
+                <p class="card-text">Small to medium-sized teams</p>
+              </div>
+            </div>
           </div>
-          <div class="file-cards">
-            <p class="file-card-title">Specialized Formats</p>
-            <p class="file-card-text">
-              .dwg, .stl, .obj, .fbx, and other industry-specific formats
-            </p>
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <img class="mb-3" />
+                <p class="card-text">
+                  Organizations with specialized file types
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="file-cards">
-            <p class="file-card-title">Rare File Types</p>
-            <p class="file-card-text">
-              Support for uncommon and legacy file formats
-            </p>
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <img class="mb-3" />
+                <p class="card-text">
+                  Teams seeking simplicity in file management
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <img class="mb-3" />
+                <p class="card-text">Businesses avoiding complex solutions</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div id="CTA">
-        <h2 class="cta">Ready to Simplify Your File Management?</h2>
-        <p class="cta-text">
+      <!-- File Types section with Bootstrap grid -->
+      <div id="filetypes" class="bg-light py-5">
+        <div class="container">
+          <h2 class="text-center mb-4">Supported File Types</h2>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">Common Types</h5>
+                  <p class="card-text">
+                    .doc, .docx, .pdf, .jpg, .png, .mp3, .mp4, and more
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">Specialized Formats</h5>
+                  <p class="card-text">
+                    .dwg, .stl, .obj, .fbx, and other industry-specific formats
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">Rare File Types</h5>
+                  <p class="card-text">
+                    Support for uncommon and legacy file formats
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- CTA section with Bootstrap classes -->
+      <div id="CTA" class="container text-center py-5">
+        <h2 class="mb-3">Ready to Simplify Your File Management?</h2>
+        <p class="lead mb-4">
           Join MyCloudFMI today and experience hassle-free file management for
           your team.
         </p>
-        <div class="button">
-          <button class="primary-button">Start Free Trial</button>
-          <button class="secondary-button">Contact Sales</button>
+        <div class="d-grid gap-2 d-md-block">
+          <button class="btn btn-primary mx-2">Start Free Trial</button>
+          <button class="btn btn-outline-primary mx-2">Contact Sales</button>
         </div>
       </div>
-      <hr />
+      <hr class="container" />
     </main>
+    <!-- Footer with Bootstrap classes -->
     <footer>
-      <div id="copyright">
-        <a>© 2024 MyCloudFMI. All rights reserved.</a>
-      </div>
-      <div id="legal-links">
-        <a> Terms of Service </a>
-        <a> Privacy </a>
+      <div class="container">
+        <!-- Main footer content -->
+        <div class="row g-4 mb-5">
+          <div class="col-md-6">
+            <div class="footer-brand">MyCloudFMI</div>
+            <p class="footer-text mb-0">
+              Simplifying file management for teams worldwide. Join us in
+              creating a more organized digital workspace.
+            </p>
+            <div class="footer-social">
+              <a href="#"><i class="bi bi-linkedin"></i></a>
+              <a href="#"><i class="bi bi-twitter-x"></i></a>
+              <a href="#"><i class="bi bi-github"></i></a>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <h5 class="footer-heading">Product</h5>
+            <ul class="footer-links">
+              <li><a href="#">Features</a></li>
+              <li><a href="#">Pricing</a></li>
+              <li><a href="#">Documentation</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h5 class="footer-heading">Company</h5>
+            <ul class="footer-links">
+              <li><a href="#">About</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Careers</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bottom footer -->
+        <div class="footer-bottom">
+          <hr class="footer-divider" />
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <div class="footer-text">
+                © 2024 MyCloudFMI. All rights reserved.
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div id="legal-links">
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Contact</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
-
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="" async defer></script>
   </body>
 </html>
