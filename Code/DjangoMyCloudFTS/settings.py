@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'loginsystem',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +73,7 @@ WSGI_APPLICATION = 'DjangoMyCloudFTS.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+# DATABASES will be different for each user, be careful when pushing/pulling
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
