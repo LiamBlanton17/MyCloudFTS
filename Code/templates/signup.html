@@ -18,14 +18,14 @@
     This is the style required to load the CSS when the django server is running.
     Comment out when needed. It's fine to leave both, just throws error in js console.
     -->
-    {% load static %}
+    <!-- {% load static %} -->
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
 
     <!-- 
     This is the style for when staticly editting the page.
     Comment out when needed. It's fine to leave both, just throws error in js console.
      -->
-    <link rel="stylesheet" href="/MyCloudFTS/Code/static/css/signup.css" />
+    <link rel="stylesheet" href="/Code/static/css/signup.css" />
     
     <!-- JS code and JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -34,12 +34,16 @@
     <title>Sign Up</title>
 </head>
 <body>
-   <div class="form-box">
-    <h1>Create an account</h1>
+    <nav class="nav">
+        <a href="./landingpage.html">MyCloudFMI</a>
+    </nav>
+
+    <div class="form-box">
+        <h1>Create an account</h1>
 
         <form class="form" action="#">
                 <!-- required somewhere in the html, security -->
-                {% csrf_token %}
+                <!-- {% csrf_token %} -->
 
                 <label for="firstname">First Name</label> 
                 <input name="firstname" id="firstname" required> 
@@ -63,6 +67,6 @@
             <a class="signin-link" href="login.html">Sign in</a>
         </p>        
         
-   </div> 
+     </div> 
 </body>
 </html>
