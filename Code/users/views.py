@@ -7,12 +7,9 @@ import json
 
 User = get_user_model()  # Get Django's built-in User model
 
-<<<<<<< HEAD
 def dashboard(request):
     return render(request, 'userdash.html')
 
-=======
->>>>>>> dadbfc3e1a24f048b88ea261ae4ec7b25c1afac5
 def home(request):
     return render(request, 'login.html')
 
