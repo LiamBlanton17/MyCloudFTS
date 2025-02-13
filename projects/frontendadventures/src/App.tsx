@@ -97,7 +97,7 @@ function App() {
           <div className='bg-zinc-500 w-full h-full mt-2 rounded-lg p-3'>
             <p className='text-2xl font-semibold ml-5'>
               Units
-              {/*was supposed to be something but i got stuck in figuring out state for the most part and didn't have time to finish the full idea*/}
+              {/*gwas supposed to be something but i got stuck in figuring out state for the most part and didn't have time to finish the full idea*/}
             </p>
             <div id='Units' className=''>
 
