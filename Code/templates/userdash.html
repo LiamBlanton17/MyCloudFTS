@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- The side bar I made. Add yours here too if u want, or make a new file for it -->
+      <!--
+      <div class="sidebar">
+        <div class="logo">
+          <h2>Dashboard</h2>
+        </div>
+        <nav class="nav-menu">
+          <ul>
+            <li class="active">
+              <a href="#"><i class="fas fa-home"></i> Home</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-project-diagram"></i> Projects</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-user"></i> Profile</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-cog"></i> Settings</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-envelope"></i> Messages</a>
+            </li>
+            <li class="logout">
+              <a href=""><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      -->
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+          <div class="search-bar">
+            <input type="text" placeholder="Search..." />
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="user-info">
+            <span class="user-name">Welcome, {{ user.username }}</span>
+            <div class="user-avatar">
+              <img src="{/*name*/}" alt="User Avatar" />
+            </div>
+          </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+          <!-- Projects Section -->
+          <div class="projects-header">
+            <h2>My Projects</h2>
+            <button class="new-project-btn">
+              <i class="fas fa-plus"></i> New Project
+            </button>
+          </div>
+
+          <!-- Projects Grid -->
+          <div class="projects-grid">
+            {% for project in projects %}
+            <div class="project-card">
+              <div class="project-card-header">
+                <h3>{{ project.name }}</h3>
+                <span class="project-date"
+                  >Created: {{ project.created_at|date:"M d, Y" }}</span
+                >
+              </div>
+              <p class="project-description">{{ project.description }}</p>
+              <div class="project-members">
+                <h4>Team Members:</h4>
+                <div class="member-avatars">
+                  {% for member in project.members.all|slice:":3" %}
+                  <img
+                    src="{{ member.avatar.url }}"
+                    alt="{{ member.username }}"
+                    title="{{ member.username }}"
+                  />
+                  {% endfor %} {% if project.members.count > 3 %}
+                  <div class="more-members">
+                    +{{ project.members.count|add:"-3" }}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="project-actions">
+                <a href="#" class="view-project">View Project</a>
+                <a href="#" class="project-settings"
+                  ><i class="fas fa-cog"></i
+                ></a>
+              </div>
+            </div>
+            {% empty %}
+            <div class="no-projects">
+              <i class="fas fa-folder-open"></i>
+              <p>No projects yet. Create your first project!</p>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- New Project Modal -->
+          <div id="newProjectModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <h2>Create New Project</h2>
+              <form id="newProjectForm">
+                <div class="form-group">
+                  <label for="projectName">Project Name</label>
+                  <input type="text" id="projectName" name="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="projectDescription">Description</label>
+                  <textarea
+                    id="projectDescription"
+                    name="description"
+                    rows="4"
+                  ></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Create Project</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add JavaScript for modal functionality -->
+    <script>
+      const modal = document.getElementById("newProjectModal");
+      const btn = document.querySelector(".new-project-btn");
+      const span = document.getElementsByClassName("close")[0];
+
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
+
+      // Close modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // Close modal when clicking outside
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>
