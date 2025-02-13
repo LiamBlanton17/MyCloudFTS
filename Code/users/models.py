@@ -1,15 +1,15 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 #Create your models here.
 
-class User(models.Model):
-    username = models.CharField(max_length=128, unique=True, default='default_username')
-    email = models.EmailField(primary_key=True, unique=True)
-    password = models.CharField(max_length=50)
-    date_joined = models.DateTimeField(auto_now_add=True)
+# class User(models.Model):
+#     username = models.CharField(max_length=128, unique=True, default='default_username')
+#     email = models.EmailField(primary_key=True, unique=True)
+#     password = models.CharField(max_length=50)
+#     date_joined = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.email
+#     def __str__(self):
+#         return self.email
     
 class Project(models.Model):
     project_id = models.AutoField(primary_key=True)
