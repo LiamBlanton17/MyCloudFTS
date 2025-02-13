@@ -7,6 +7,9 @@ import json
 
 User = get_user_model()  # Get Django's built-in User model
 
+SESSION_EXPIRY_TIME = 1800
+
+
 def home(request):
     return render(request, 'login.html')
 
@@ -22,7 +25,6 @@ def signup(request):
 def api_sign_up(request):
     if request.method != "POST":
         return JsonResponse({'message': 'Invalid request method'})
-
     try:
         data = json.loads(request.body)
         first_name = data.get('first_name', None)
@@ -39,16 +41,17 @@ def api_sign_up(request):
 
         # Create and save user securely
         user = User.objects.create_user(
-            username=email, 
+            username = email,
             first_name=first_name,
             last_name=last_name,
             email=email,
             password=password 
         )
-
+        user.save()
         # Login user on signup
         login(request, user) 
-
+        request.session['username'] = email
+        request.session.set_expiry(SESSION_EXPIRY_TIME)
         return JsonResponse({'message': f'Hello, {first_name}! Your account has been created!'})
 
     except Exception as e:
@@ -71,6 +74,9 @@ def api_login(request):
 
         if user is not None:
             login(request, user)
+            if 'username' not in request.session:
+                request.session['username'] = email
+                request.session.set_expiry(SESSION_EXPIRY_TIME)
             return JsonResponse({'message': f'Welcome back, {user.first_name}!'})
         else:
             return JsonResponse({'message': 'Invalid email or password!'})
