@@ -3,12 +3,14 @@ from django.http import HttpResponse, JsonResponse
 from django.db import connection
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, authenticate, login
+from users.models import Project, UserProject
 import json
 
 User = get_user_model()  # Get Django's built-in User model
 
 def dashboard(request):
     return render(request, 'userdash.html')
+
 
 def home(request):
     return render(request, 'login.html')
@@ -77,6 +79,34 @@ def api_login(request):
             return JsonResponse({'message': f'Welcome back, {user.first_name}!'})
         else:
             return JsonResponse({'message': 'Invalid email or password!'})
+
+    except Exception as e:
+        return JsonResponse({'message': f'Error! {str(e)}'})
+
+
+def create_project(request):
+    if request.method != "POST":
+        return JsonResponse({'message': 'Invalid request method'})
+
+    try:
+        data = json.loads(request.body)
+        project_name = data.get('projectName', None)
+        project_description = data.get('projectDescription', None)
+
+        username = request.user.username
+
+        if not project_name or not project_description:
+            return JsonResponse({'message': 'Project name and description are required!'})
+
+        if not username:
+            return JsonResponse({'message': 'User not logged in!'})
+
+        # This should be per user not global, so people can have the same project
+        if Project.objects.filter(name=project_name).exists():
+            return JsonResponse({'message': 'Project name already exists!'})
+
+        new_project = Project(name=project_name, root_path=f'/media/{username}/{project_name}/', description=project_description)
+        new_project.save()
 
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
