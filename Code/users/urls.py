@@ -11,4 +11,5 @@ urlpatterns = [
     # Below are api POSTS
     path('api/post/sign_up/', views.api_sign_up, name='signup'),
     path('api/post/login/', views.api_login, name='login'),
+    path('api/post/create_project/', views.create_project, name='createproject'),
 ]
