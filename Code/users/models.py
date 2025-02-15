@@ -35,8 +35,8 @@ class UserProject(models.Model):
     class Meta: 
         unique_together = ('user', 'project')
 
-
 class Folder(models.Model):
+    folder_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     path = models.CharField(max_length=512)
     parent_folder = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subfolders')
@@ -51,6 +51,7 @@ class Folder(models.Model):
         verbose_name_plural = 'Folders'
                 
 class File(models.Model):
+    file_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     path = models.CharField(max_length=512)
     size = models.PositiveIntegerField() #File size in bytes

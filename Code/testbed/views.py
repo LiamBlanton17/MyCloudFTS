@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .functions import * #Change to import only the functions you need
 
 # Create your views here.
 def testbed(request):
