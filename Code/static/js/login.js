@@ -45,10 +45,17 @@ $(function(){
             dataType: 'json',
             success: function(response) {
                 console.log('Success:', response);
-                alert(response.message);
+                if (response.status === 'success') {
+                    console.log('Redirecting to dashboard...');
+                    window.location.href = '/dashboard.html';
+                } else {
+                    console.log('Login failed:', response.message);
+                    alert(response.message);
+                }
             },
             error: function(xhr, status, error) {
                 console.log('Error:', error);
+                alert('Login failed. Please try again.');
             }
         });
     });

@@ -1,15 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.db import connection
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth import get_user_model, authenticate, login, logout
 from users.models import Project, UserProject
 import json
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
 User = get_user_model()  # Get Django's built-in User model
 
+@login_required(login_url='/login.html')
 def dashboard(request):
-    return render(request, 'userdash.html')
+    if not request.user.is_authenticated:
+        return redirect('login')
+    return render(request, 'userdash.html', {'user': request.user})
 
 
 def home(request):
@@ -62,7 +67,7 @@ def api_sign_up(request):
 
 def api_login(request):
     if request.method != "POST":
-        return JsonResponse({'message': 'Invalid request method'})
+        return JsonResponse({'message': 'Invalid request method', 'status': 'error'})
 
     try:
         data = json.loads(request.body)
@@ -70,19 +75,39 @@ def api_login(request):
         password = data.get('password', None)
 
         if not email or not password:
-            return JsonResponse({'message': 'Email and password are required!'})
+            return JsonResponse({
+                'message': 'Email and password are required!',
+                'status': 'error'
+            })
 
-        user = authenticate(username=email, password=password)  # Authenticate user
+        user = authenticate(username=email, password=password)
 
         if user is not None:
             login(request, user)
-            return JsonResponse({'message': f'Welcome back, {user.first_name}!'})
+            print(f"User {email} successfully logged in")  # Debug log
+            return JsonResponse({
+                'message': f'Welcome back, {user.first_name}!',
+                'status': 'success',
+                'redirect': '/dashboard.html'  # Adding explicit redirect URL
+            })
         else:
-            return JsonResponse({'message': 'Invalid email or password!'})
+            print(f"Failed login attempt for {email}")  # Debug log
+            return JsonResponse({
+                'message': 'Invalid email or password!',
+                'status': 'error'
+            })
 
     except Exception as e:
-        return JsonResponse({'message': f'Error! {str(e)}'})
+        print(f"Login error: {str(e)}")  # Debug log
+        return JsonResponse({
+            'message': f'Error! {str(e)}',
+            'status': 'error'
+        })
 
+@require_POST
+def api_logout(request):
+    logout(request)
+    return JsonResponse({'status': 'success'})
 
 def create_project(request):
     if request.method != "POST":

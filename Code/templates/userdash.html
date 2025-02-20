@@ -15,9 +15,8 @@
   </head>
   <body>
     <div class="dashboard-container">
-      <!-- The side bar I made. Add yours here too if u want, or make a new file for it -->
-      <!--
-      <div class="sidebar">
+      <!-- Added mobile-sidebar class for responsive behavior -->
+      <div class="sidebar" id="sidebar">
         <div class="logo">
           <h2>Dashboard</h2>
         </div>
@@ -39,12 +38,11 @@
               <a href="#"><i class="fas fa-envelope"></i> Messages</a>
             </li>
             <li class="logout">
-              <a href=""><i class="fas fa-sign-out-alt"></i> Logout</a>
+              <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </li>
           </ul>
         </nav>
       </div>
-      -->
 
       <!-- Main Content -->
       <div class="main-content">
@@ -55,10 +53,7 @@
             <i class="fas fa-search"></i>
           </div>
           <div class="user-info">
-            <span class="user-name">Welcome, {{ user.username }}</span>
-            <div class="user-avatar">
-              <img src="{/*name*/}" alt="User Avatar" />
-            </div>
+            <span class="user-name">Welcome, {{ user.first_name }}</span>
           </div>
         </header>
 
@@ -86,16 +81,14 @@
               <div class="project-members">
                 <h4>Team Members:</h4>
                 <div class="member-avatars">
-                  {% for member in project.members.all|slice:":3" %}
+                  {% for member in project.members %}
                   <img
                     src="{{ member.avatar.url }}"
                     alt="{{ member.username }}"
                     title="{{ member.username }}"
                   />
-                  {% endfor %} {% if project.members.count > 3 %}
-                  <div class="more-members">
-                    +{{ project.members.count|add:"-3" }}
-                  </div>
+                  {% endfor %} {% if project.members %}
+                  <div class="more-members">+{{ project.members }}</div>
                   {% endif %}
                 </div>
               </div>
@@ -140,11 +133,49 @@
       </div>
     </div>
 
-    <!-- Add JavaScript for modal functionality -->
+    <!-- Update the script section -->
     <script>
       const modal = document.getElementById("newProjectModal");
       const btn = document.querySelector(".new-project-btn");
       const span = document.getElementsByClassName("close")[0];
+      const logoutBtn = document.querySelector(".logout");
+
+      // Prevent the logout link from navigating
+      logoutBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        fetch("/api/post/logout/", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              window.location.href = "/login.html";
+            }
+          })
+          .catch((error) => {
+            console.error("Logout failed:", error);
+          });
+      });
+
+      // Add this function to get CSRF token
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
 
       btn.onclick = function () {
         modal.style.display = "block";
