@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Dashboard</title>
+    <title>User Project Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/userdash.js' %}"></script>
@@ -61,9 +61,9 @@
         <div class="dashboard-content">
           <!-- Projects Section -->
           <div class="projects-header">
-            <h2>My Projects</h2>
+            <h2>{{ project.name }} Files</h2>
             <button class="new-project-btn">
-              <i class="fas fa-plus"></i> New Project
+              <i class="fas fa-plus"></i> Upload File
             </button>
           </div>
 
@@ -93,7 +93,7 @@
                 </div>
               </div>
               <div class="project-actions">
-                <a href="./userproject.html" class="view-project">View Project</a>
+                <a href="#" class="view-project">View Project</a>
                 <a href="#" class="project-settings"
                   ><i class="fas fa-cog"></i
                 ></a>

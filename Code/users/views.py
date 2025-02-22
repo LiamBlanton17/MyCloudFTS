@@ -18,6 +18,13 @@ def dashboard(request):
     projects = Project.objects.all().order_by('-date_created')
     return render(request, 'userdash.html', {'user': request.user, 'projects': projects})
 
+@login_required(login_url='/login.html')
+def userproject(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    #projects = Project.objects.filter(user=request.user)
+    projects = Project.objects.all().order_by('-date_created')
+    return render(request, 'userproject.html', {'user': request.user, 'projects': projects})
 
 def home(request):
     return render(request, 'login.html')
@@ -26,6 +33,8 @@ def home(request):
 def landing_page(request):
     return render(request, 'landingpage.html')
 
+
+    return render(request, 'userproject.html')
 
 def signup(request):
     return render(request, 'signup.html')

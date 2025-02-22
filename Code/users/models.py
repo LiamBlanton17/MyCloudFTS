@@ -1,7 +1,7 @@
 from django.db import models
 
 #Create your models here.
-
+#Redundant due to the fact that Django already has a User model
 class User(models.Model):
     username = models.CharField(max_length=128, unique=True, default='default_username')
     email = models.EmailField(primary_key=True, unique=True)
