@@ -63,8 +63,13 @@ $(function(){
             contentType: 'application/json',
             dataType: 'json',
             success: function(response) {
-                console.log('Success:', response);
-                alert(response.message);
+                if (response.status === 'success') {
+                    console.log('Redirecting to dashboard...');
+                    window.location.href = response.redirect;
+                } else {
+                    console.log('Login failed:', response.message);
+                    alert(response.message);
+                }
             },
             error: function(xhr, status, error) {
                 console.log('Error:', error);

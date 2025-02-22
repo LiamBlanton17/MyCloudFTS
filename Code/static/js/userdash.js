@@ -48,12 +48,12 @@ $(function(){
             success: function(response) {
                 console.log('Success:', response);
                 alert(response.message);
+                location.reload();
             },
             error: function(xhr, status, error) {
                 console.log('Error:', error);
             }
         });
-        location.reload();
     });
 });
 

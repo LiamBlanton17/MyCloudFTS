@@ -14,7 +14,9 @@ User = get_user_model()  # Get Django's built-in User model
 def dashboard(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    return render(request, 'userdash.html', {'user': request.user})
+    #projects = Project.objects.filter(user=request.user)
+    projects = Project.objects.all().order_by('-date_created')
+    return render(request, 'userdash.html', {'user': request.user, 'projects': projects})
 
 
 def home(request):
@@ -57,9 +59,14 @@ def api_sign_up(request):
         )
 
         # Login user on signup
-        login(request, user) 
+        login(request, user)
+        print(f"User {email} successfully logged in")  # Debug log
 
-        return JsonResponse({'message': f'Hello, {first_name}! Your account has been created!'})
+        return JsonResponse({
+            'message': f'Hello, {first_name}! Your account has been created!',
+            'status': 'success',
+            'redirect': '/dashboard.html'
+        })
 
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
@@ -104,10 +111,12 @@ def api_login(request):
             'status': 'error'
         })
 
+
 @require_POST
 def api_logout(request):
     logout(request)
     return JsonResponse({'status': 'success'})
+
 
 def create_project(request):
     if request.method != "POST":
@@ -132,6 +141,6 @@ def create_project(request):
 
         new_project = Project(name=project_name, root_path=f'/media/{username}/{project_name}/', description=project_description)
         new_project.save()
-
+        return JsonResponse({'message': 'Project created successfully!'})
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
