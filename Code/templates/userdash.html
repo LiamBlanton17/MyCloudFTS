@@ -74,7 +74,7 @@
               <div class="project-card-header">
                 <h3>{{ project.name }}</h3>
                 <span class="project-date"
-                  >Created: {{ project.created_at|date:"M d, Y" }}</span
+                  >Created: {{ project.date_created|date:"M d, Y" }}</span
                 >
               </div>
               <p class="project-description">{{ project.description }}</p>
@@ -93,7 +93,7 @@
                 </div>
               </div>
               <div class="project-actions">
-                <a href="#" class="view-project">View Project</a>
+                <a href="./userproject.html" class="view-project">View Project</a>
                 <a href="#" class="project-settings"
                   ><i class="fas fa-cog"></i
                 ></a>

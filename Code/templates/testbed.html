@@ -31,9 +31,9 @@
             <div class="col">
                 <h3>Who Is Logged In?</h3>
                 <section>
-                    <span>Email: </span><span id="email_display"></span><br>
-                    <span>First Name: </span><span id="first_name_display"></span><br>
-                    <span>Last Name: </span><span id="last_name_display"></span><br>
+                    <span>Email: {{ user.email }}</span><span id="email_display"></span><br>
+                    <span>First Name: {{ user.first_name }}</span><span id="first_name_display"></span><br>
+                    <span>Last Name: {{ user.last_name }}</span><span id="last_name_display"></span><br>
                     <span>Project ID: </span><span id="project_id_display"></span><br>
                 </section>
             </div>
