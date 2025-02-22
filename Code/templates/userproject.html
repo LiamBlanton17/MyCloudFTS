@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Project Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/userdash.js' %}"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Added mobile-sidebar class for responsive behavior -->
+      <div class="sidebar" id="sidebar">
+        <div class="logo">
+          <h2>Dashboard</h2>
+        </div>
+        <nav class="nav-menu">
+          <ul>
+            <li class="active">
+              <a href="#"><i class="fas fa-home"></i> Home</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-project-diagram"></i> Projects</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-user"></i> Profile</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-cog"></i> Settings</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-envelope"></i> Messages</a>
+            </li>
+            <li class="logout">
+              <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+          <div class="search-bar">
+            <input type="text" placeholder="Search..." />
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="user-info">
+            <span class="user-name">Welcome, {{ user.first_name }}</span>
+          </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+          <!-- Projects Section -->
+          <div class="projects-header">
+            <h2>{{ project.name }} Files</h2>
+            <button class="new-project-btn">
+              <i class="fas fa-plus"></i> Upload File
+            </button>
+          </div>
+
+          <!-- Projects Grid -->
+          <div class="projects-grid">
+            {% for project in projects %}
+            <div class="project-card">
+              <div class="project-card-header">
+                <h3>{{ project.name }}</h3>
+                <span class="project-date"
+                  >Created: {{ project.date_created|date:"M d, Y" }}</span
+                >
+              </div>
+              <p class="project-description">{{ project.description }}</p>
+              <div class="project-members">
+                <h4>Team Members:</h4>
+                <div class="member-avatars">
+                  {% for member in project.members %}
+                  <img
+                    src="{{ member.avatar.url }}"
+                    alt="{{ member.username }}"
+                    title="{{ member.username }}"
+                  />
+                  {% endfor %} {% if project.members %}
+                  <div class="more-members">+{{ project.members }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="project-actions">
+                <a href="#" class="view-project">View Project</a>
+                <a href="#" class="project-settings"
+                  ><i class="fas fa-cog"></i
+                ></a>
+              </div>
+            </div>
+            {% empty %}
+            <div class="no-projects">
+              <i class="fas fa-folder-open"></i>
+              <p>No projects yet. Create your first project!</p>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- New Project Modal -->
+          <div id="newProjectModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <h2>Create New Project</h2>
+              <form id="newProjectForm">
+                <div class="form-group">
+                  <label for="projectName">Project Name</label>
+                  <input type="text" id="projectName" name="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="projectDescription">Description</label>
+                  <textarea
+                    id="projectDescription"
+                    name="description"
+                    rows="4"
+                  ></textarea>
+                </div>
+                <button class="submit-btn">Create Project</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Update the script section -->
+    <script>
+      const modal = document.getElementById("newProjectModal");
+      const btn = document.querySelector(".new-project-btn");
+      const span = document.getElementsByClassName("close")[0];
+      const logoutBtn = document.querySelector(".logout");
+
+      // Prevent the logout link from navigating
+      logoutBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        fetch("/api/post/logout/", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              window.location.href = "/login.html";
+            }
+          })
+          .catch((error) => {
+            console.error("Logout failed:", error);
+          });
+      });
+
+      // Add this function to get CSRF token
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
+
+      // Close modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // Close modal when clicking outside
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>
