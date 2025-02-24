@@ -23,10 +23,10 @@
         <nav class="nav-menu">
           <ul>
             <li class="active">
-              <a href="#"><i class="fas fa-home"></i> Home</a>
+              <a href="{% url 'landingpage' %}"><i class="fas fa-home"></i> Home</a>
             </li>
             <li>
-              <a href="#"><i class="fas fa-project-diagram"></i> Projects</a>
+              <a href="{% url 'dashboard' %}"><i class="fas fa-project-diagram"></i> Projects</a>
             </li>
             <li>
               <a href="#"><i class="fas fa-user"></i> Profile</a>
@@ -61,7 +61,7 @@
         <div class="dashboard-content">
           <!-- Projects Section -->
           <div class="projects-header">
-            <h2>{{ project.name }} Files</h2>
+            <h2>Files</h2>
             <button class="new-project-btn">
               <i class="fas fa-plus"></i> Upload File
             </button>
@@ -69,12 +69,12 @@
 
           <!-- Projects Grid -->
           <div class="projects-grid">
-            {% for project in projects %}
+            {% for file in files %}
             <div class="project-card">
               <div class="project-card-header">
-                <h3>{{ project.name }}</h3>
+                <h3>{{ file.name }}</h3>
                 <span class="project-date"
-                  >Created: {{ project.date_created|date:"M d, Y" }}</span
+                  >Created: {{ file.date_created|date:"M d, Y" }}</span
                 >
               </div>
               <p class="project-description">{{ project.description }}</p>
@@ -102,7 +102,7 @@
             {% empty %}
             <div class="no-projects">
               <i class="fas fa-folder-open"></i>
-              <p>No projects yet. Create your first project!</p>
+              <p>No files yet. Create or upload your first file!</p>
             </div>
             {% endfor %}
           </div>
