@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Code/static/css/confirmation.css"/>
+    <title>Confirmation</title>
+</head>
+<body onload="typeWriter()"> 
+    <nav class="nav">
+        <a href="./landingpage.html">MyCloudFTS</a>
+    </nav>
+    <main class="container">
+        <svg width="200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M96 80c0-26.5 21.5-48 48-48l288 0c26.5 0 48 21.5 48 48l0 304L96 384 96 80zm313 47c-9.4-9.4-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L409 161c9.4-9.4 9.4-24.6 0-33.9zM0 336c0-26.5 21.5-48 48-48l16 0 0 128 448 0 0-128 16 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48L48 480c-26.5 0-48-21.5-48-48l0-96z"/></svg>
+        <h1 id="thanks"></h1>
+        <p>Your account has been created and your subscription has been approved! A confirmation email has been sent to your inbox.</p>
+        <a href="./userdash.html">
+            <button >Proceed to your dashboard</button>
+        </a>
+    </main>
+</body>
+</html>
+
+<script>
+    var i=0;
+    var txt="Thank you for subscribing!";
+    var speed=50;
+
+    function typeWriter(){
+        if (i<txt.length){
+            document.getElementById("thanks").innerHTML+=txt.charAt(i);
+            i++;
+            setTimeout(typeWriter, speed);
+        }
+    }
+</script>
