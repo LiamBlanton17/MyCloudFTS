@@ -5,25 +5,56 @@ body {
     padding: 0;
     align-items: center;
     min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .container {
-    padding-top: 10%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 4fr;
+    grid-template-rows: 0.5fr 3fr 0.5fr;
     grid-template-areas: 
         "header header header"
-        "silver gold platinum";    
-    gap: 2rem;
-    justify-items: center;
+        "silver gold platinum"
+        "none none continue";    
+    column-gap: 10rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
 }
 
 h1 {
     font-size: 2rem;
     color: #333;
-    margin-bottom: 1rem;
     grid-area: header;
+    padding-top: 4rem;
+    position: relative;
+    bottom: -0.5rem;
+}
+
+.silver, .gold, .platinum {
+        /* border: solid .5rem gray; */
+    border-radius: .5rem;
+    padding: 8rem 5rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+    transition: all 300ms ease-in-out;
+}
+
+.silver:hover, .gold:hover, .platinum:hover {
+    transform: scale(1.1);
+}
+
+.silver:hover{
+    box-shadow: #bcc6cc 0px 10px 10px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -2px;
+}
+
+.gold:hover{
+    box-shadow: #ead89bc5 0px 10px 10px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -2px;
+
+}
+
+.platinum:hover{
+    box-shadow: rgb(229, 251, 255, 0.9) 0px 10px 10px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -2px;
+
 }
 
 .silver {
@@ -41,24 +72,90 @@ h1 {
     align-self: center;
 }
 
+label{
+    align-items: center;
+    background-color: #d6d6d63f;
+    border-radius: 12px;
+    box-shadow: transparent 0 0 0 3px,rgba(18, 18, 18, .1) 0 6px 20px;
+    box-sizing: border-box;
+    color: #121212;
+    cursor: pointer;
+    position: relative;
+    bottom: -2rem;
+    font-family: Inter,sans-serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    justify-content: center;
+    margin: 0;
+    padding: 1rem 1.2rem;
+    text-align: center;
+    text-decoration: none;
+    transition: box-shadow .2s,-webkit-box-shadow .2s;
+    border: 0;
+}
+    
+label:hover{
+    box-shadow: #121212 0 0 0 3px, transparent 0 0 0 0;
+}
+
+h3{
+    position: relative;
+    top: -2rem;
+}
+
+h2{
+    position: relative;
+    top: -3rem;
+}
+
+p{
+    position: relative;
+    top: -2rem;
+}
+
+
 .continue-btn{
-    justify-items: center;
-    background-color: #007bff;
+    grid-area: continue;
     color: white;
-    padding: 0.6rem;
-    height: auto;
-    width: 20%;
+    padding: 0.2rem;
+    width:fit-content;
     border: none;
     border-radius: 0.1rem;
-    font-size: 1rem;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: background-color 0.3s;
-    position: absolute;
-    top: 80%;
+    justify-self: center;
+    align-self: center;
+    align-items: center;
+    background-color: #FCFCFD;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A;
+    cursor: pointer;
+    height: 3rem;
+    justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    transition: box-shadow .15s,transform .15s;
+    position: relative;
+    bottom: -1rem;
+}
+
+.continue-btn:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
 }
 
 .continue-btn:hover {
-    background-color: #0056b3;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+    background-color: #007bffae;
+    color: white;
+}
+
+.continue-btn:active {
+  box-shadow: #D6D6E7 0 3px 7px inset;
+  transform: translateY(2px);
 }
 
 .nav {
