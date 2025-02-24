@@ -37,6 +37,11 @@ def landing_page(request):
 def signup(request):
     return render(request, 'signup.html')
 
+def pricing(request):
+    return render(request, 'pricing.html')
+
+def confirmation(request):
+    return render(request, 'confirmation.html')
 
 def api_sign_up(request):
     if request.method != "POST":

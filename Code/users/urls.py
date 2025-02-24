@@ -7,6 +7,8 @@ urlpatterns = [
     path('landingpage.html', views.landing_page, name='landingpage'),
     path('signup.html', views.signup, name='signup'),
     path('', RedirectView.as_view(url='landingpage.html', permanent=True)),
+    path('pricing.html', views.pricing, name='pricing'),
+    path('confirmation.html', views.confirmation, name='confirmation'),
     path('dashboard.html', views.dashboard, name='dashboard'),
     path('userproject.html', views.userproject, name='userproject'),
     #path('logout/', views.logout_view, name='logout'),
