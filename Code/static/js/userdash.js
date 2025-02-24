@@ -26,6 +26,8 @@ function validateForm(){
     }
     return 1;
 }
+
+//Create Project - Send Project Info to Database
 $(function(){
     $('.submit-btn').on("click", function(e){
         e.preventDefault();
@@ -48,7 +50,36 @@ $(function(){
             success: function(response) {
                 console.log('Success:', response);
                 alert(response.message);
-                location.reload();
+                /**************************************************************/
+                // New Code
+                 // Dynamically add the new project to the grid
+                 const project = response.project;
+
+                 const newProjectCard = `
+                     <div class="project-card" id="project-${project.id}">
+                         <div class="project-card-header">
+                             <h3>${project.name}</h3>
+                             <span class="project-date">Created: ${new Date().toLocaleDateString()}</span>
+                         </div>
+                         <p class="project-description">${project.description}</p>
+                         <div class="project-actions">
+                             <!-- Dynamically set the href link to include the project ID -->
+                             <a href="/userproject/${project.id}/" class="view-project">View Project</a>
+                         </div>
+                     </div>
+                 `;
+                 
+                 // Add the new project card to the projects grid
+                 $(".projects-grid").append(newProjectCard);
+ 
+                 // Close the modal
+                 modal.style.display = "none";
+ 
+                 // Clear the form fields
+                 $('#newProjectForm').trigger("reset");
+             },
+                /**************************************************************/
+                //location.reload();
             },
             error: function(xhr, status, error) {
                 console.log('Error:', error);

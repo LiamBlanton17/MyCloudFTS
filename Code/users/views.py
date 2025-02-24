@@ -34,8 +34,6 @@ def landing_page(request):
     return render(request, 'landingpage.html')
 
 
-    return render(request, 'userproject.html')
-
 def signup(request):
     return render(request, 'signup.html')
 
@@ -133,23 +131,46 @@ def create_project(request):
 
     try:
         data = json.loads(request.body)
+        
+        #Extract fields from request
         project_name = data.get('projectName', None)
         project_description = data.get('projectDescription', None)
+        
+        #project_name = data.get('projectName', None)
+        #project_description = data.get('projectDescription', None)
 
         username = request.user.username
-
-        if not project_name or not project_description:
-            return JsonResponse({'message': 'Project name and description are required!'})
 
         if not username:
             return JsonResponse({'message': 'User not logged in!'})
 
+        #Ensure user is authenticated
+        if not project_name or not project_description:
+            return JsonResponse({'message': 'Project name and description are required!'})
+
+        
         # This should be per user not global, so people can have the same project
         if Project.objects.filter(name=project_name).exists():
             return JsonResponse({'message': 'Project name already exists!'})
 
+
+        # Create project and save project
+        # project = Project.objects.create(
+        #     name=data.get('projectName'),
+        #     description=data.get('projectDescription'),
+        # )
+
         new_project = Project(name=project_name, root_path=f'/media/{username}/{project_name}/', description=project_description)
         new_project.save()
-        return JsonResponse({'message': 'Project created successfully!'})
+        
+        #Add additional fields to project so page can load correct project_id
+        return JsonResponse({
+            'message': 'Project created successfully!',
+            'project': {
+                'id': new_project.project_id,
+                'name': new_project.name,
+                'description': new_project.description,
+            }
+        })
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
