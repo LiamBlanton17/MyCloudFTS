@@ -32,7 +32,6 @@ h1 {
 }
 
 .silver, .gold, .platinum {
-        /* border: solid .5rem gray; */
     border-radius: .5rem;
     padding: 8rem 5rem;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
@@ -43,16 +42,16 @@ h1 {
     transform: scale(1.1);
 }
 
-.silver:hover{
+.silver:hover {
     box-shadow: #bcc6cc 0px 10px 10px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -2px;
 }
 
-.gold:hover{
+.gold:hover {
     box-shadow: #ead89bc5 0px 10px 10px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -2px;
 
 }
 
-.platinum:hover{
+.platinum:hover {
     box-shadow: rgb(229, 251, 255, 0.9) 0px 10px 10px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -2px;
 
 }
@@ -62,17 +61,17 @@ h1 {
     align-self: center;
 }
 
-.gold{
+.gold {
     grid-area: gold;
     align-self: center;
 }
 
-.platinum{
+.platinum {
     grid-area: platinum;
     align-self: center;
 }
 
-label{
+label {
     align-items: center;
     background-color: #d6d6d63f;
     border-radius: 12px;
@@ -94,28 +93,33 @@ label{
     border: 0;
 }
     
-label:hover{
+label:hover {
     box-shadow: #121212 0 0 0 3px, transparent 0 0 0 0;
 }
 
-h3{
+h3 {
     position: relative;
     top: -2rem;
 }
 
-h2{
+h2 {
     position: relative;
     top: -3rem;
 }
 
-p{
+p {
     position: relative;
     top: -2rem;
 }
 
-
-.continue-btn{
+.continue {
     grid-area: continue;
+    position: relative;
+    bottom: -1rem;
+    justify-self: center;
+}
+
+.continue-btn {
     color: white;
     padding: 0.2rem;
     width:fit-content;
