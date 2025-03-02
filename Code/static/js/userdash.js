@@ -78,9 +78,6 @@ $(function(){
                  // Clear the form fields
                  $('#newProjectForm').trigger("reset");
              },
-                /**************************************************************/
-                //location.reload();
-            },
             error: function(xhr, status, error) {
                 console.log('Error:', error);
             }

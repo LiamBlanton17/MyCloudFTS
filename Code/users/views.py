@@ -3,28 +3,44 @@ from django.http import HttpResponse, JsonResponse
 from django.db import connection
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from users.models import Project, UserProject
+from users.models import Project, Folder, File
 import json
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+import os
 
 User = get_user_model()  # Get Django's built-in User model
+
 
 @login_required(login_url='/login.html')
 def dashboard(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    #projects = Project.objects.filter(user=request.user)
-    projects = Project.objects.all().order_by('-date_created')
+    projects = request.user.projects.all().order_by('-date_created')
     return render(request, 'userdash.html', {'user': request.user, 'projects': projects})
+
 
 @login_required(login_url='/login.html')
 def userproject(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    #projects = Project.objects.filter(user=request.user)
-    projects = Project.objects.all().order_by('-date_created')
-    return render(request, 'userproject.html', {'user': request.user, 'projects': projects})
+    project_id = request.GET.get('project_id', -1)
+    folder_id = request.GET.get('folder_id', -1)
+    if project_id == -1:  # Must have a project id
+        return redirect('dashboard')
+    folder = None
+    if folder_id == -1:  # Get root folder
+        folder = Folder.objects.filter(project_id=project_id, is_root=True).first()
+    else:  # Get this specific folder
+        folder = Folder.objects.filter(folder_id=folder_id).first()
+    if folder:
+        sub_folders = Folder.objects.filter(parent_folder=folder).all()
+        files = File.objects.filter(folder_id=folder.folder_id).all()
+    else:
+        sub_folders = []
+        files = []
+    return render(request, 'userproject.html', {'sub_folders': sub_folders, 'files': files})
+
 
 def home(request):
     return render(request, 'login.html')
@@ -37,11 +53,14 @@ def landing_page(request):
 def signup(request):
     return render(request, 'signup.html')
 
+
 def pricing(request):
     return render(request, 'pricing.html')
 
+
 def confirmation(request):
     return render(request, 'confirmation.html')
+
 
 def api_sign_up(request):
     if request.method != "POST":
@@ -63,11 +82,11 @@ def api_sign_up(request):
 
         # Create and save user securely
         user = User.objects.create_user(
-            username=email, 
+            username=email,
             first_name=first_name,
             last_name=last_name,
             email=email,
-            password=password 
+            password=password
         )
 
         # Login user on signup
@@ -130,45 +149,101 @@ def api_logout(request):
     return JsonResponse({'status': 'success'})
 
 
+# THIS DOES NOT WORK! Buggy front end, and backend doesn't work right
+# The root folder path needs to be changed too. It will save files in the users directory
+@login_required(login_url='/login.html')
+def upload_file(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if request.method != "POST":
+        return JsonResponse({'message': 'Invalid request method'})
+
+    try:
+        project_id = request.GET.get('project_id', -1)
+        folder_id = request.GET.get('folder_id', -1)
+
+        if project_id == -1:  # Must have a project id
+            return redirect('dashboard')
+
+        uploaded_file = request.FILES['file']
+        if not uploaded_file:
+            raise Exception("No file!")
+
+        file_name = uploaded_file.name
+        file_size = uploaded_file.size
+        file_type = uploaded_file.content_type
+
+        folder = Folder.objects
+        if folder_id == -1:  # Get root folder
+            folder.filter(project_id=project_id, is_root=True).first()
+        else:  # Get this folder
+            folder.filter(folder_id=folder_id).first()
+
+        # Add file entry to database
+        file = File(
+            name=file_name,
+            path=f"{folder.path}",
+            size=file_size,
+            file_type=file_type,
+            folder=folder
+        )
+        file.save()
+
+        # Actually upload the file
+        save_path = f"{folder.path}{file_name}"  # Folder path has a trailing /
+        with open(save_path, "wb") as file:
+            for chunk in uploaded_file.chunks():  # Read and write in chunks to handle large files
+                file.write(chunk)
+
+        return JsonResponse({'message': f'Successfully uploaded file!'})
+    except Exception as e:
+        return JsonResponse({'message': f'Error! {str(e)}'})
+
+
 def create_project(request):
     if request.method != "POST":
         return JsonResponse({'message': 'Invalid request method'})
 
     try:
         data = json.loads(request.body)
-        
-        #Extract fields from request
+
+        # Extract fields from request
         project_name = data.get('projectName', None)
         project_description = data.get('projectDescription', None)
-        
-        #project_name = data.get('projectName', None)
-        #project_description = data.get('projectDescription', None)
 
         username = request.user.username
 
         if not username:
             return JsonResponse({'message': 'User not logged in!'})
 
-        #Ensure user is authenticated
+        # Ensure user is authenticated
         if not project_name or not project_description:
             return JsonResponse({'message': 'Project name and description are required!'})
 
-        
-        # This should be per user not global, so people can have the same project
-        if Project.objects.filter(name=project_name).exists():
+        # Prevent users from having duplicate project names
+        if request.user.projects.filter(name=project_name).exists():
             return JsonResponse({'message': 'Project name already exists!'})
 
-
-        # Create project and save project
-        # project = Project.objects.create(
-        #     name=data.get('projectName'),
-        #     description=data.get('projectDescription'),
-        # )
-
-        new_project = Project(name=project_name, root_path=f'/media/{username}/{project_name}/', description=project_description)
+        # Create a new project
+        new_project = Project(
+            name=project_name,
+            root_path=f'/media/user_uploads/{username}/{project_name}/',
+            description=project_description,
+        )
         new_project.save()
-        
-        #Add additional fields to project so page can load correct project_id
+        new_project.user.set([request.user])
+
+        # Create the folder for the project
+        folder_path = f'/media/user_uploads/{username}/{project_name}/root/'
+        project_root_folder = Folder(
+            name=f'{project_name} Root',
+            path=folder_path,
+            project=new_project,
+            is_root=True
+        );
+        os.makedirs(folder_path, exist_ok=False)
+
+        # Add additional fields to project so page can load correct project_id
         return JsonResponse({
             'message': 'Project created successfully!',
             'project': {
