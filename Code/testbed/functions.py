@@ -1,18 +1,18 @@
-# Testbed Functions 
-from users.models import User, Project, UserProject, Folder, File
+# Testbed Functions
+from users.models import User, Project, Folder, File
 
 def get_files_and_folders(folder_id):
-    try: 
+    try:
         folder = Folder.objects.get(folder_id=folder_id)
     except Folder.DoesNotExist:
         return []
-    
+
     files_and_folders = []
 
     #Get subfolders
     #subfolders = related_name='subfolders' in Folder.parent_folder model
     subfolders = folder.subfolders.all()
-    for subfolder in subfolders: 
+    for subfolder in subfolders:
         files_and_folders.append((subfolder.folder_id, subfolder.name))
 
     #Get files in the folder
@@ -31,7 +31,7 @@ def download_file(file_id):
     except File.DoesNotExist:
         return None
 
-#Upload a new file 
+#Upload a new file
 def upload_file(file_id, new_file):
     try:
         file = File.objects.get(file_id=file_id)
@@ -52,7 +52,7 @@ def delete_file(file_id):
     except File.DoesNotExist:
         return False
 
-#Retrieve metadata for a file    
+#Retrieve metadata for a file
 def check_file(file_name, folder_id):
     try:
         file = File.objects.get(name=file_name, folder_id=folder_id)
@@ -98,17 +98,15 @@ def project_info(project_id):
         return project_info
     except Project.DoesNotExist:
         return None
-    
-#Update user role in project 
+
+#Update user role in project
+#Needs updating
 def update_user_role(user_email, project_id, role):
     try:
         user = User.objects.get(email=user_email)
         project = Project.objects.get(project_id=project_id)
-        user_project = UserProject.objects.get(user=user, project=project)
-        user_project.role = role
-        user_project.save()
         return True
-    except (User.DoesNotExist, Project.DoesNotExist, UserProject.DoesNotExist):
+    except (User.DoesNotExist, Project.DoesNotExist):
         return False
 
 #Create a new subfolder in a project
@@ -117,12 +115,12 @@ def create_subfolder(parent_folder_id, name, project_id):
         parent_folder = Folder.objects.get(folder_id=parent_folder_id)
     except Folder.DoesNotExist:
         return False
-    
-    try: 
+
+    try:
         project = Project.objects.get(project_id=project_id)
     except Project.DoesNotExist:
         return False
-    
+
     subfolder = Folder(
         name=name,
         path=f"{parent_folder.path}/{name}",
