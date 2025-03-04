@@ -24,8 +24,8 @@ def dashboard(request):
 def userproject(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    project_id = request.GET.get('project_id', -1)
-    folder_id = request.GET.get('folder_id', -1)
+    project_id = int(request.GET.get('project_id', -1))
+    folder_id = int(request.GET.get('folder_id', -1))
     if project_id == -1:  # Must have a project id
         return redirect('dashboard')
     folder = None
@@ -39,6 +39,7 @@ def userproject(request):
     else:
         sub_folders = []
         files = []
+    print(len(files))
     return render(request, 'userproject.html', {'sub_folders': sub_folders, 'files': files})
 
 
@@ -156,28 +157,31 @@ def upload_file(request):
     if not request.user.is_authenticated:
         return redirect('login')
     if request.method != "POST":
-        return JsonResponse({'message': 'Invalid request method'})
+        return JsonResponse({'message': 'Invalid request method'},  status=405)
 
     try:
-        project_id = request.GET.get('project_id', -1)
-        folder_id = request.GET.get('folder_id', -1)
+        project_id = int(request.GET.get('project_id', -1))
+        folder_id = int(request.GET.get('folder_id', -1))
 
         if project_id == -1:  # Must have a project id
             return redirect('dashboard')
 
         uploaded_file = request.FILES['file']
         if not uploaded_file:
-            raise Exception("No file!")
+            return JsonResponse({'message': 'No file provided!'})
 
         file_name = uploaded_file.name
         file_size = uploaded_file.size
         file_type = uploaded_file.content_type
 
-        folder = Folder.objects
+        folder = None
         if folder_id == -1:  # Get root folder
-            folder.filter(project_id=project_id, is_root=True).first()
+            folder = Folder.objects.filter(project_id=project_id, is_root=True).first()
         else:  # Get this folder
-            folder.filter(folder_id=folder_id).first()
+            folder = Folder.objects.filter(folder_id=folder_id).first()
+
+        if folder is None:
+            return JsonResponse({'message': 'Invalid folder!'})
 
         # Add file entry to database
         file = File(
@@ -185,24 +189,26 @@ def upload_file(request):
             path=f"{folder.path}",
             size=file_size,
             file_type=file_type,
-            folder=folder
+            folder_id=folder
         )
         file.save()
-
+        print(f"Uploaded: {file}")
+        """
         # Actually upload the file
         save_path = f"{folder.path}{file_name}"  # Folder path has a trailing /
         with open(save_path, "wb") as file:
             for chunk in uploaded_file.chunks():  # Read and write in chunks to handle large files
                 file.write(chunk)
-
+        """
         return JsonResponse({'message': f'Successfully uploaded file!'})
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
 
 
+@login_required(login_url='/login.html')
 def create_project(request):
     if request.method != "POST":
-        return JsonResponse({'message': 'Invalid request method'})
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
 
     try:
         data = json.loads(request.body)
@@ -240,8 +246,9 @@ def create_project(request):
             path=folder_path,
             project=new_project,
             is_root=True
-        );
-        os.makedirs(folder_path, exist_ok=False)
+        )
+        project_root_folder.save()
+        #os.makedirs(folder_path, exist_ok=False)
 
         # Add additional fields to project so page can load correct project_id
         return JsonResponse({

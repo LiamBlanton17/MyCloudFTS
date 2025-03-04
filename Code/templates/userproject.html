@@ -69,7 +69,7 @@
             <input type="file" id="new-file-upload-input">
           </div>
 
-          <!-- Projects Grid -->
+          <!-- File Grid -->
           <div class="projects-grid">
             {% for file in files %}
             <div class="project-card">
@@ -79,32 +79,13 @@
                   >Created: {{ file.date_created|date:"M d, Y" }}</span
                 >
               </div>
-              <p class="project-description">{{ project.description }}</p>
-              <div class="project-members">
-                <h4>Team Members:</h4>
-                <div class="member-avatars">
-                  {% for member in project.members %}
-                  <img
-                    src="{{ member.avatar.url }}"
-                    alt="{{ member.username }}"
-                    title="{{ member.username }}"
-                  />
-                  {% endfor %} {% if project.members %}
-                  <div class="more-members">+{{ project.members }}</div>
-                  {% endif %}
-                </div>
-              </div>
+              <p class="project-description">{{ file.name }}</p>
               <div class="project-actions">
-                <a href="#" class="view-project">View Project</a>
+                <a href="#" class="view-project">Download File</a>
                 <a href="#" class="project-settings"
                   ><i class="fas fa-cog"></i
                 ></a>
               </div>
-            </div>
-            {% empty %}
-            <div class="no-projects">
-              <i class="fas fa-folder-open"></i>
-              <p>No files yet. Create or upload your first file!</p>
             </div>
             {% endfor %}
           </div>

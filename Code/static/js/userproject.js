@@ -19,7 +19,6 @@ function getCookie(name) {
 $(() => {
     $('.new-file-btn').click(function(e) {
         e.preventDefault();
-        document.getElementById('new-file-upload-input').click();
         $('#new-file-upload-input').click();
     });
     $('#new-file-upload-input').on('change', function(e) {
@@ -29,8 +28,11 @@ $(() => {
         if (!file) return;
         let formData = new FormData();
         formData.append('file', file);
+        const urlParams = new URLSearchParams(window.location.search);
+        const project_id = urlParams.get('project_id') || -1;
+        const folder_id = urlParams.get('folder_id') || -1;
         $.ajax({
-            url: 'api/post/upload_file/',
+            url: `api/post/upload_file/?project_id=${project_id}&folder_id=${folder_id}`,
             type: 'POST',
             data: formData,
             headers: {
@@ -41,11 +43,11 @@ $(() => {
             success: function(response) {
                 console.log('Success:', response.message);
                 alert(response.message);
+                location.reload();
             },
             error: function(xhr, status, error) {
                 console.log('Error:', error);
             }
         });
-        $(this).val('');
     });
 });
