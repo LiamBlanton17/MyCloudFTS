@@ -12,6 +12,9 @@ urlpatterns = [
     path('dashboard.html', RedirectView.as_view(url='userdash.html', permanent=True)),
     path('userdash.html', views.dashboard, name='dashboard'),
     path('userproject.html', views.userproject, name='userproject'),
+    path('profile.html', views.profile, name='profile'),
+    path('profile/<str:username>/', views.profile, name='profile'),
+
     #path('logout/', views.logout_view, name='logout'),
     # Below are api POSTS
     path('api/post/sign_up/', views.api_sign_up, name='signup'),
@@ -19,4 +22,5 @@ urlpatterns = [
     path('api/post/login/', views.api_login, name='login_api'),
     path('api/post/create_project/', views.create_project, name='createproject'),
     path('api/post/upload_file/', views.upload_file, name='uploadfile')
+
 ]

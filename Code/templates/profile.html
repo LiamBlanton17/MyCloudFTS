@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - MyCloudFTS</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <div class="logo">
+          <h2>Dashboard</h2>
+        </div>
+        <nav class="nav-menu">
+          <ul>
+            <li>
+              <a href="{% url 'landingpage' %}"
+                ><i class="fas fa-home"></i> Home</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'dashboard' %}"
+                ><i class="fas fa-project-diagram"></i> Projects</a
+              >
+            </li>
+            <li class="active">
+              <a href="{% url 'profile' %}"
+                ><i class="fas fa-user"></i> Profile</a
+              >
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-cog"></i> Settings</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-envelope"></i> Messages</a>
+            </li>
+            <li class="logout">
+              <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+          <div class="search-bar">
+            <input type="text" placeholder="Search..." />
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="user-info">
+            <span class="user-name">Welcome, {{ user.first_name }}</span>
+          </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-container">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <div class="default-avatar">{{ user.username.0|upper }}</div>
+            </div>
+            <div class="profile-info">
+              <h1>{{ user.username }}</h1>
+              <p class="bio">
+                Member since {{ user.date_joined|date:"F j, Y" }}
+              </p>
+              <div class="profile-stats">
+                <div class="stat">
+                  <span class="stat-value">{{ user.email }}</span>
+                  <span class="stat-label">Email</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value"
+                    >{{ user.date_joined|date:"M Y" }}</span
+                  >
+                  <span class="stat-label">Joined</span>
+                </div>
+              </div>
+              <a href="#" class="edit-profile-btn">Edit Profile</a>
+            </div>
+          </div>
+
+          <div class="profile-content">
+            <div class="profile-tabs" role="tablist">
+              <button
+                class="tab-btn active"
+                data-tab="overview"
+                role="tab"
+                aria-selected="true"
+                aria-controls="overview-tab"
+              >
+                Overview
+              </button>
+              <button
+                class="tab-btn"
+                data-tab="security"
+                role="tab"
+                aria-selected="false"
+                aria-controls="security-tab"
+              >
+                Security
+              </button>
+              <button
+                class="tab-btn"
+                data-tab="preferences"
+                role="tab"
+                aria-selected="false"
+                aria-controls="preferences-tab"
+              >
+                Preferences
+              </button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview-tab" role="tabpanel">
+              <div class="overview-section">
+                <h2>Personal Information</h2>
+                <div class="info-grid">
+                  <div class="info-item">
+                    <label>Username</label>
+                    <p>{{ user.username }}</p>
+                  </div>
+                  <div class="info-item">
+                    <label>Email</label>
+                    <p>{{ user.email }}</p>
+                  </div>
+                  <div class="info-item">
+                    <label>Member Since</label>
+                    <p>{{ user.date_joined|date:"F j, Y" }}</p>
+                  </div>
+                  <div class="info-item">
+                    <label>Account Status</label>
+                    <p class="status-active">Active</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div class="tab-content" id="security-tab" role="tabpanel">
+              <div class="security-section">
+                <h2>Password & Security</h2>
+                <form class="security-form">
+                  <div class="form-group">
+                    <label for="current-password">Current Password</label>
+                    <input
+                      type="password"
+                      id="current-password"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input
+                      type="password"
+                      id="new-password"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="confirm-password">Confirm New Password</label>
+                    <input
+                      type="password"
+                      id="confirm-password"
+                      class="form-control"
+                    />
+                  </div>
+                  <button type="submit" class="btn-save">
+                    Update Password
+                  </button>
+                </form>
+
+                <div class="security-options">
+                  <h3>Two-Factor Authentication</h3>
+                  <div class="toggle-option">
+                    <label class="switch">
+                      <input type="checkbox" />
+                      <span class="slider"></span>
+                    </label>
+                    <span>Enable Two-Factor Authentication</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preferences Tab -->
+            <div class="tab-content" id="preferences-tab" role="tabpanel">
+              <div class="preferences-section">
+                <h2>Account Preferences</h2>
+                <div class="preferences-options">
+                  <div class="toggle-option">
+                    <label class="switch">
+                      <input type="checkbox" checked />
+                      <span class="slider"></span>
+                    </label>
+                    <span>Email Notifications</span>
+                  </div>
+                  <div class="toggle-option">
+                    <label class="switch">
+                      <input type="checkbox" checked />
+                      <span class="slider"></span>
+                    </label>
+                    <span>Project Updates</span>
+                  </div>
+                  <div class="toggle-option">
+                    <label class="switch">
+                      <input type="checkbox" />
+                      <span class="slider"></span>
+                    </label>
+                    <span>Marketing Communications</span>
+                  </div>
+                </div>
+
+                <div class="language-section">
+                  <h3>Language Preference</h3>
+                  <select class="form-control">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const tabButtons = document.querySelectorAll(".tab-btn");
+        const tabContents = document.querySelectorAll(".tab-content");
+
+        tabButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            // Update tab button states
+            tabButtons.forEach((btn) => {
+              btn.classList.remove("active");
+              btn.setAttribute("aria-selected", "false");
+            });
+            tabContents.forEach((content) =>
+              content.classList.remove("active")
+            );
+
+            // Activate selected tab
+            this.classList.add("active");
+            this.setAttribute("aria-selected", "true");
+            const tabName = this.getAttribute("data-tab");
+            document.getElementById(`${tabName}-tab`).classList.add("active");
+          });
+        });
+
+        // Handle form submissions
+        const securityForm = document.querySelector(".security-form");
+        if (securityForm) {
+          securityForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            // Add password update logic here
+            alert("Password update functionality will be implemented soon");
+          });
+        }
+
+        // Handle toggle switches
+        const toggleSwitches = document.querySelectorAll(
+          '.switch input[type="checkbox"]'
+        );
+        toggleSwitches.forEach((toggle) => {
+          toggle.addEventListener("change", function () {
+            const setting =
+              this.closest(".toggle-option").querySelector("span").textContent;
+            // Add toggle update logic here
+            console.log(
+              `${setting} is now ${this.checked ? "enabled" : "disabled"}`
+            );
+          });
+        });
+
+        // Handle language selection
+        const languageSelect = document.querySelector(
+          ".language-section select"
+        );
+        if (languageSelect) {
+          languageSelect.addEventListener("change", function () {
+            // Add language update logic here
+            console.log(`Language changed to ${this.value}`);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

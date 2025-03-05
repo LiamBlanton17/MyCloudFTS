@@ -33,13 +33,19 @@
         <nav class="nav-menu">
           <ul>
             <li class="active">
-              <a href="{% url 'landingpage' %}"><i class="fas fa-home"></i> Home</a>
+              <a href="{% url 'landingpage' %}"
+                ><i class="fas fa-home"></i> Home</a
+              >
             </li>
             <li>
-              <a href="{% url 'dashboard' %}"><i class="fas fa-project-diagram"></i> Projects</a>
+              <a href="{% url 'dashboard' %}"
+                ><i class="fas fa-project-diagram"></i> Projects</a
+              >
             </li>
             <li>
-              <a href="#"><i class="fas fa-user"></i> Profile</a>
+              <a href="{% url 'profile' %}"
+                ><i class="fas fa-user"></i> Profile</a
+              >
             </li>
             <li>
               <a href="#"><i class="fas fa-cog"></i> Settings</a>
@@ -103,7 +109,9 @@
                 </div>
               </div>
               <div class="project-actions">
+
                 <a href="./userproject.html?project_id={{ project.project_id }}" class="view-project">View Project</a>
+
                 <a href="#" class="project-settings"
                   ><i class="fas fa-cog"></i
                 ></a>
