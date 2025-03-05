@@ -11,10 +11,14 @@ urlpatterns = [
     path('confirmation.html', views.confirmation, name='confirmation'),
     path('dashboard.html', views.dashboard, name='dashboard'),
     path('userproject.html', views.userproject, name='userproject'),
+    path('profile.html', views.profile, name='profile'),
+    path('profile/<str:username>/', views.profile, name='profile'),
+
     #path('logout/', views.logout_view, name='logout'),
     # Below are api POSTS
     path('api/post/sign_up/', views.api_sign_up, name='signup'),
     path('api/post/logout/', views.api_logout, name='logout'),
     path('api/post/login/', views.api_login, name='login_api'),
     path('api/post/create_project/', views.create_project, name='createproject'),
+    
 ]

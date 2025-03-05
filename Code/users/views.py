@@ -8,7 +8,20 @@ import json
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 
+
 User = get_user_model()  # Get Django's built-in User model
+
+
+
+
+def profile(request, username):
+    user = User.objects.get(username=username)
+    return render(request, 'profile.html', {'user': user})
+
+
+@login_required(login_url='/login.html')
+def profile(request):
+    return render(request, 'profile.html', {'user': request.user})
 
 @login_required(login_url='/login.html')
 def dashboard(request):
