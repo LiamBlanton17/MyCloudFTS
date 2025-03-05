@@ -53,7 +53,6 @@ def userproject(request):
     else:
         sub_folders = []
         files = []
-    print(len(files))
     return render(request, 'userproject.html', {'sub_folders': sub_folders, 'files': files})
 
 
@@ -200,20 +199,20 @@ def upload_file(request):
         # Add file entry to database
         file = File(
             name=file_name,
-            path=f"{folder.path}",
+            path=f"{folder.path}{file_name}",
             size=file_size,
             file_type=file_type,
             folder_id=folder
         )
         file.save()
-        print(f"Uploaded: {file}")
-        """
+        print(f"Uploaded: {file} to {folder.path}")
+
         # Actually upload the file
         save_path = f"{folder.path}{file_name}"  # Folder path has a trailing /
         with open(save_path, "wb") as file:
             for chunk in uploaded_file.chunks():  # Read and write in chunks to handle large files
                 file.write(chunk)
-        """
+    
         return JsonResponse({'message': f'Successfully uploaded file!'})
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
@@ -254,7 +253,7 @@ def create_project(request):
         new_project.user.set([request.user])
 
         # Create the folder for the project
-        folder_path = f'/media/user_uploads/{username}/{project_name}/root/'
+        folder_path = os.path.dirname(os.path.realpath(__file__)) + f'/../user_uploads/{username}/{project_name}/root/'
         project_root_folder = Folder(
             name=f'{project_name} Root',
             path=folder_path,
@@ -262,7 +261,7 @@ def create_project(request):
             is_root=True
         )
         project_root_folder.save()
-        #os.makedirs(folder_path, exist_ok=False)
+        os.makedirs(folder_path, exist_ok=True)
 
         # Add additional fields to project so page can load correct project_id
         return JsonResponse({

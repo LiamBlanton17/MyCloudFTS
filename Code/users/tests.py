@@ -53,3 +53,11 @@ class CreateProjectTests(TestCase):
         self.assertEqual(response.status_code, 405) 
         self.assertEqual(response_data['message'], 'Invalid request method')
     
+    # White box test
+    def test_project_view(self):
+        pass
+    
+
+    # Black box test
+    def test_file_upload(self);
+        pass
