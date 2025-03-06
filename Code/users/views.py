@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.db import connection
 from django.contrib.auth.models import User
@@ -273,6 +273,8 @@ def create_project(request):
         return JsonResponse({'message': f'Error! {str(e)}'})
 
 
+# Delete a project and all its files and folders
+
 @login_required(login_url='/login.html')
 def delete_project(request):
     if request.method != "POST":
@@ -280,12 +282,19 @@ def delete_project(request):
 
     try:
         data = json.loads(request.body)
-        project_id = data.get('project_id', None)
+
+        project_id = data.get('project_id', None) # Get project_id from request
 
         if not project_id:
             return JsonResponse({'message': 'No project_id supplied!'})
+        
+        project = Project.objects.filter(project_id=project_id).first()
+        if not project:
+            return JsonResponse({'message': 'Project not found!'})
+        project.delete() # Delete the project from the database
+        return JsonResponse({'message': f'Project {project_id} deleted successfully!'})
 
-        return JsonResponse({'message': f'Not implemented! Project ID that was going to be deleted: {project_id}'})
+        # return JsonResponse({'message': f'Not implemented! Project ID that was going to be deleted: {project_id}'})
     except Exception as e:
             return JsonResponse({'message': f'Error! {str(e)}'})
 
