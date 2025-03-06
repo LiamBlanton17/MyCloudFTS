@@ -13,9 +13,6 @@ import os
 User = get_user_model()  # Get Django's built-in User model
 
 
-
-
-
 def profile(request, username):
     user = User.objects.get(username=username)
     return render(request, 'profile.html', {'user': user})
@@ -274,3 +271,21 @@ def create_project(request):
         })
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
+
+
+@login_required(login_url='/login.html')
+def delete_project(request):
+    if request.method != "POST":
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        project_id = data.get('project_id', None)
+
+        if not project_id:
+            return JsonResponse({'message': 'No project_id supplied!'})
+
+        return JsonResponse({'message': f'Not implemented! Project ID that was going to be deleted: {project_id}'})
+    except Exception as e:
+            return JsonResponse({'message': f'Error! {str(e)}'})
+
