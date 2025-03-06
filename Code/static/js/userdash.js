@@ -27,6 +27,7 @@ function validateForm(){
     return 1;
 }
 
+
 //Create Project - Send Project Info to Database
 $(() => {
     $(function(){
@@ -128,6 +129,7 @@ $(() => {
                         console.log('XHR:', xhr);
                     }
                 });
+
             }
         });
     });

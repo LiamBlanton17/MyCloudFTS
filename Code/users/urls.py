@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/post/logout/', views.api_logout, name='logout'),
     path('api/post/login/', views.api_login, name='login_api'),
     path('api/post/create_project/', views.create_project, name='createproject'),
+
     path('api/post/upload_file/', views.upload_file, name='uploadfile'),
     path('api/post/delete_project/', views.delete_project, name='deleteproject')
     
