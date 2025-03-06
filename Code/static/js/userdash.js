@@ -97,13 +97,20 @@ $(() => {
                 return;
             }
             console.log('Project ID:', project_id);
+
+            const data = {
+                project_id: project_id,
+            };
         
             if (confirm('Are you sure you want to delete this project?')) {
                 $.ajax({
                     //url: `/delete_project/${projectId}/`,
                     url: `/api/post/delete_project/`,
                     type: 'POST',  // Change from DELETE to POST
-                    data: JSON.stringify({ action: 'delete' }),  // Sending the action parameter
+                    data: JSON.stringify({ 
+                        action: 'delete', // Sending the action parameter
+                        project_id: project_id //Pass the project_id to the backend
+                    }),  
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken')
                     },
