@@ -1,3 +1,4 @@
+import os
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -59,5 +60,84 @@ class CreateProjectTests(TestCase):
     
 
     # Black box test
-    def test_file_upload(self);
+    def test_file_upload(self):
         pass
+
+
+# Class to test project deletion
+class DeleteProjectTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='password')
+        self.client.login(username='testuser', password='password')
+        self.project = Project.objects.create(
+            name='Test Project', 
+            description='Test Description', 
+            root_path='testpath')
+        self.project.user.set([self.user])
+        self.url = reverse('deleteproject') # This gets the url associated with the view create_project
+        
+        # Create the root folder for the project
+        self.root_folder = Folder.objects.create(
+            project=self.project,
+            path=self.project.root_path,
+            name='Root Folder',
+            is_root=True
+        )
+
+        # Create a file in the root folder
+        self.file = File.objects.create(
+            folder_id=self.root_folder,
+            name='Test File',
+            path=self.root_folder.path,
+            size=100,
+            file_type='txt'
+        )
+
+    # Integration Tests - Simulate the AJAX Post the user would trigger
+    def test_delete_project(self):
+        data = {
+            'project_id': self.project.project_id,
+            'action': 'delete'
+        }
+
+        # Send the DELETE request 
+        response = self.client.post(self.url, data, content_type='application/json')
+        response_data = response.json()
+
+        # Verify correct HTTP status code
+        self.assertEqual(response.status_code, 200)
+
+        # Verify correct JSON response
+        self.assertEqual(response_data['message'], 'Project 1 deleted successfully!')
+
+        # Verify that the project was deleted
+        self.assertEqual(Project.objects.filter(project_id=self.project.project_id).count(), 0)
+
+        # Verify that the root folder was deleted
+        self.assertFalse(os.path.exists(self.project.root_path))
+
+        # Verify that the project is no longer associated with the user
+        self.assertEqual(self.user.projects.count(), 0)
+
+        # Verify that the project's folders and files were deleted
+        self.assertEqual(Folder.objects.filter(project_id=self.project.project_id).count(), 0)
+        self.assertEqual(File.objects.filter(folder_id__project_id=self.project.project_id).count(), 0)
+
+    # Test attempted deletion of a project after user logout
+    def test_delete_project_unauthorized(self):
+        self.client.logout()
+        data = {
+            'project_id': self.project.project_id,
+            'action': 'delete'
+        }
+        response = self.client.post(self.url, data, content_type='application/json')
+        
+        # User receives a 302 status code and is redirected to the login page
+        self.assertEqual(response.status_code, 302)
+
+        # Follow the redirect to the login page
+        response = self.client.get(response.url)
+
+        # Verify the final response is status code 200 for the login page, and contains the login form
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('login', response.content.decode())
