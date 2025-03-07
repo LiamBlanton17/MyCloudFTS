@@ -290,7 +290,7 @@ def delete_project(request):
         
         project = Project.objects.filter(project_id=project_id).first()
         if not project:
-            return JsonResponse({'message': 'Project not found!'})
+            return JsonResponse({'message': 'Project does not exist!'}, status=404)
         project.delete() # Delete the project from the database
         return JsonResponse({'message': f'Project {project_id} deleted successfully!'})
 

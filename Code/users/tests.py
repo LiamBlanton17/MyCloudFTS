@@ -123,7 +123,7 @@ class DeleteProjectTests(TestCase):
         self.assertEqual(Folder.objects.filter(project_id=self.project.project_id).count(), 0)
         self.assertEqual(File.objects.filter(folder_id__project_id=self.project.project_id).count(), 0)
 
-    # Test attempted deletion of a project after user logout
+    # Test attempted deletion of a project after user logout - unauthorized access
     def test_delete_project_unauthorized(self):
         self.client.logout()
         data = {
@@ -141,3 +141,20 @@ class DeleteProjectTests(TestCase):
         # Verify the final response is status code 200 for the login page, and contains the login form
         self.assertEqual(response.status_code, 200)
         self.assertIn('login', response.content.decode())
+
+    # Test attempted deletion of a project that does not exist
+    def test_delete_non_existant_project(self):
+        data = {
+            'project_id': 999,
+            'action': 'delete'
+        }
+        response = self.client.post(self.url, data, content_type='application/json')
+        response_data = response.json()
+
+        # Verify correct HTTP status code
+        self.assertEqual(response.status_code, 404)
+
+        # Verify correct JSON response
+        self.assertEqual(response_data['message'], 'Project does not exist!')
+
+    
