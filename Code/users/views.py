@@ -229,10 +229,11 @@ def create_project(request):
 
         username = request.user.username
 
+        # Ensure user is authenticated
         if not username:
             return JsonResponse({'message': 'User not logged in!'})
 
-        # Ensure user is authenticated
+        # Ensure all fields are provided
         if not project_name or not project_description:
             return JsonResponse({'message': 'Project name and description are required!'})
 
@@ -284,13 +285,23 @@ def delete_project(request):
         data = json.loads(request.body)
 
         project_id = data.get('project_id', None) # Get project_id from request
+        action = data.get('action', None) # Get action from request (delete)
 
-        if not project_id:
-            return JsonResponse({'message': 'No project_id supplied!'})
+        if not project_id or not action:
+            return JsonResponse({'message': 'Invalid request data!'}, status = 400)
+        
+        if action != 'delete':
+            return JsonResponse({'message': 'Invalid action!'}, status = 400)
+        
+        try:
+            project_id = int(project_id)
+        except ValueError:
+            return JsonResponse({'message': 'Invalid project ID!'}, status=400)
         
         project = Project.objects.filter(project_id=project_id).first()
+        
         if not project:
-            return JsonResponse({'message': 'Project not found!'})
+            return JsonResponse({'message': 'Project does not exist!'}, status=404)
         project.delete() # Delete the project from the database
         return JsonResponse({'message': f'Project {project_id} deleted successfully!'})
 
