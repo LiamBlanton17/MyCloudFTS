@@ -157,4 +157,36 @@ class DeleteProjectTests(TestCase):
         # Verify correct JSON response
         self.assertEqual(response_data['message'], 'Project does not exist!')
 
-    
+
+    # Test deletion with missing or invalid request data 
+    def test_delete_project_invalid_data(self):
+
+        # Test 1 - Missing 'action' field
+        data = {'project_id': self.project.project_id} 
+        response = self.client.post(self.url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('message', response.json()) # Verify that the response contains an error message   
+
+        # Test 2 - Missing 'project_id' field
+        data = {'action': 'delete'}
+        response = self.client.post(self.url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('message', response.json())
+
+        # Test 3 - Invalid 'project_id' (non-integer)
+        data = {'project_id': 'invalid_id', 'action': 'delete'}
+        response = self.client.post(self.url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('message', response.json())
+
+        # Test 4 - Empty request body 
+        data = {}
+        response = self.client.post(self.url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('message', response.json())
+
+        # Test 5 - Invalid 'action' field
+        data = {'project_id': self.project.project_id, 'action': 'remove'}
+        response = self.client.post(self.url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('message', response.json())
