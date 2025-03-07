@@ -161,7 +161,7 @@ class DeleteProjectTests(TestCase):
     
     # Black-box unit tests 
     # Test deletion with missing or invalid request data 
-    def test_delete_project_invalid_data(self):
+    def test_project_invalid_input(self):
 
         # Test 1 - Missing 'action' field
         data = {'project_id': self.project.project_id} 
