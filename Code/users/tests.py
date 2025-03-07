@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from users.models import Project, Folder, File
-
+from django.core.exceptions import ValidationError
 
 # Class to test project creation
 class CreateProjectTests(TestCase):
@@ -63,7 +63,7 @@ class CreateProjectTests(TestCase):
     def test_file_upload(self):
         pass
 
-
+# Integration Tests
 # Class to test project deletion
 class DeleteProjectTests(TestCase):
     def setUp(self):
@@ -74,7 +74,7 @@ class DeleteProjectTests(TestCase):
             description='Test Description', 
             root_path='testpath')
         self.project.user.set([self.user])
-        self.url = reverse('deleteproject') # This gets the url associated with the view create_project
+        self.url = reverse('deleteproject') # This gets the url associated with the view 'deleteproject'
         
         # Create the root folder for the project
         self.root_folder = Folder.objects.create(
@@ -93,7 +93,7 @@ class DeleteProjectTests(TestCase):
             file_type='txt'
         )
 
-    # Integration Tests - Simulate the AJAX Post the user would trigger
+    # Integration Tests Section - Simulate the AJAX Post the user would trigger
     def test_delete_project(self):
         data = {
             'project_id': self.project.project_id,
@@ -157,7 +157,6 @@ class DeleteProjectTests(TestCase):
         # Verify correct JSON response
         self.assertEqual(response_data['message'], 'Project does not exist!')
 
-
     # Test deletion with missing or invalid request data 
     def test_delete_project_invalid_data(self):
 
@@ -190,3 +189,77 @@ class DeleteProjectTests(TestCase):
         response = self.client.post(self.url, data, content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertIn('message', response.json())
+
+
+# White box test
+# Class to test the project model and it's fields 
+class ProjectModelTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='password')
+
+    # Test the string method of the project model
+    def test_project_str_method(self):
+        self.project = Project.objects.create(
+            name='Test Project', 
+            description='Test Description', 
+            root_path='testpath')
+        self.project.user.set([self.user])
+        self.assertEqual(str(self.project), 'Test Project')
+
+    # Test the project_root max length constraint is enforced
+    def test_project_root_max_length(self):
+        long_path = 'a' * 256 # Max allowed length is 255
+        project = Project(name='Test Project', description='Test Description', root_path=long_path)
+        
+        with self.assertRaises(ValidationError):
+            project.full_clean() # This triggers Django model validation enforcing length check
+
+    # Test the project name max length constraint is enforced
+    def test_project_name_max_length(self):
+        long_name = 'a' * 256 # Max allowed length is 255
+        project = Project(name=long_name, description='Test Description', root_path='testpath')
+        
+        with self.assertRaises(ValidationError):
+            project.full_clean() # This triggers Django model validation enforcing length check
+
+    # Test the project description is optional, null and blank are allowed
+    def test_project_description_optional(self):
+        project = Project.objects.create(name='Test Project', root_path='testpath')
+        self.assertIsNone(project.description)
+
+    # Test the project user relationship
+    def test_project_user_relationship(self):
+        project = Project.objects.create(name='Test Project', root_path='testpath')
+        project.user.add(self.user)
+        self.assertIn(self.user, project.user.all())
+
+    # Test date_created and date_updated fields are automattically filled in
+    def test_date_created_updated_auto_fill(self):
+        project = Project.objects.create(name='Test Project', root_path='testpath')
+        self.assertIsNotNone(project.date_created)
+        self.assertIsNotNone(project.date_updated) 
+
+    # Test project with no users - Edge case, views.py assigns user to project on creation
+    # but many to many field allows for no users
+    def test_project_no_users(self):
+        project = Project.objects.create(name='Test Project', root_path='testpath')
+        self.assertEqual(project.user.count(), 0)
+
+    # Test project with mutltiple users
+    def test_project_multiple_users(self):
+        project = Project.objects.create(name='Test Project', root_path='testpath')
+        project.user.add(self.user)
+        
+        user2 = User.objects.create_user(username='testuser2', password='password')
+        project.user.add(user2)
+        
+        # Verify user count is two, and that both users are associated with the same project
+        self.assertEqual(project.user.count(), 2)
+        self.assertIn(self.user, project.user.all())
+        self.assertIn(user2, project.user.all())
+
+        
+        
+    
+
+

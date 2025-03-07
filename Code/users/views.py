@@ -229,10 +229,11 @@ def create_project(request):
 
         username = request.user.username
 
+        # Ensure user is authenticated
         if not username:
             return JsonResponse({'message': 'User not logged in!'})
 
-        # Ensure user is authenticated
+        # Ensure all fields are provided
         if not project_name or not project_description:
             return JsonResponse({'message': 'Project name and description are required!'})
 
