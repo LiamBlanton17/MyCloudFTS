@@ -54,12 +54,12 @@ class CreateProjectTests(TestCase):
         self.assertEqual(response.status_code, 405) 
         self.assertEqual(response_data['message'], 'Invalid request method')
     
-    # White box test
+    # White-box unit tests
     def test_project_view(self):
         pass
     
 
-    # Black box test
+    # Black-box unit tests
     def test_file_upload(self):
         pass
 
@@ -157,6 +157,9 @@ class DeleteProjectTests(TestCase):
         # Verify correct JSON response
         self.assertEqual(response_data['message'], 'Project does not exist!')
 
+    
+    
+    # Black-box unit tests 
     # Test deletion with missing or invalid request data 
     def test_delete_project_invalid_data(self):
 
@@ -191,7 +194,20 @@ class DeleteProjectTests(TestCase):
         self.assertIn('message', response.json())
 
 
-# White box test
+# White-box unit tests - Statement Coverage
+# Project model being tested
+# class Project(models.Model):
+#     project_id = models.AutoField(primary_key=True)
+#     root_path = models.CharField(max_length=255)
+#     name = models.CharField(max_length=255)
+#     description = models.TextField(blank=True, null=True)
+#     date_created = models.DateTimeField(auto_now_add=True)
+#     date_updated = models.DateTimeField(auto_now=True)
+#     user = models.ManyToManyField(User, related_name="projects")
+
+#     def __str__(self):
+#         return self.name
+
 # Class to test the project model and it's fields 
 class ProjectModelTest(TestCase):
     def setUp(self):
@@ -257,6 +273,8 @@ class ProjectModelTest(TestCase):
         self.assertEqual(project.user.count(), 2)
         self.assertIn(self.user, project.user.all())
         self.assertIn(user2, project.user.all())
+
+
 
         
         
