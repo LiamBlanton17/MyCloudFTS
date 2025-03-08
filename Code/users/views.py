@@ -39,6 +39,10 @@ def userproject(request):
     folder_id = int(request.GET.get('folder_id', -1))
     if project_id == -1:  # Must have a project id
         return redirect('dashboard')
+    if not Project.objects.filter(project_id=project_id).exists():  # Project must exists
+        return redirect('dashboard')
+    if not Project.objects.filter(project_id=project_id, user=request.user).exists():  # User must own/have access to the project
+        return redirect('dashboard')
     folder = None
     if folder_id == -1:  # Get root folder
         folder = Folder.objects.filter(project_id=project_id, is_root=True).first()

@@ -53,15 +53,137 @@ class CreateProjectTests(TestCase):
         response_data = response.json()
         self.assertEqual(response.status_code, 405) 
         self.assertEqual(response_data['message'], 'Invalid request method')
-    
-    # White-box unit tests
-    def test_project_view(self):
-        pass
-    
 
-    # Black-box unit tests
-    def test_file_upload(self):
-        pass
+# Unit Tests
+class UserProjectView(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='password')
+        self.url = reverse('userproject')
+
+        # Create user owned project
+        self.project = Project.objects.create(
+            name='Test Project', 
+            description='Test Description', 
+            root_path='testpath')
+        self.project.user.set([self.user])
+
+        # Create the root folder for the project
+        self.root_folder = Folder.objects.create(
+            project=self.project,
+            path=self.project.root_path,
+            name='Root Folder',
+            is_root=True
+        )
+
+        # Create a non-folder for the project
+        self.sub_folder = Folder.objects.create(
+            project=self.project,
+            path=f"{self.project.root_path}/sub/",
+            parent_folder=self.root_folder,
+            name='Sub Folder',
+            is_root=False
+        )
+
+        # Create a file in the root folder
+        self.file = File.objects.create(
+            folder_id=self.root_folder,
+            name='Test File',
+            path=self.root_folder.path,
+            size=100,
+            file_type='txt'
+        )
+
+        # Create 2 files in the sub folder
+        self.file = File.objects.create(
+            folder_id=self.sub_folder,
+            name='Test File1',
+            path=self.sub_folder.path,
+            size=100,
+            file_type='txt'
+        )
+        self.file = File.objects.create(
+            folder_id=self.sub_folder,
+            name='Test File2',
+            path=self.sub_folder.path,
+            size=100,
+            file_type='txt'
+        )
+
+        # Create the non user owned project
+        self.bad_project = Project.objects.create(
+            name='Bad Project', 
+            description='Bad Description', 
+            root_path='badpath')
+
+
+
+    # White box test
+    # Coverage achieved - Branch Coverage
+    # To do so:
+    #   Test case user is not authenticated
+    #   Test case project_id is not provided
+    #   Test case project_id is equal to -1
+    #   Test case project_id does not exist
+    #   Test case the user is not the owner of the project
+    #   Test case folder_id is not provided
+    #   Test case folder_id is equal to -1 
+    #   Test cause folder_id is not equal to -1 and the folder is found
+    #   Test cause folder_id is no equal to -1 and the folder is not found
+    def test_user_project_views(self):
+        
+        # Without logging in, attempt to access the project
+        # Verify http response and redirect
+        
+        response = self.client.get(f"{self.url}?project_id={self.project.project_id}")
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(response.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('login', response.content.decode()) 
+
+        # Log in now for the rest of the tests
+        self.client.login(username='testuser', password='password')
+
+
+        # Check project_id not being provided
+        response = self.client.get(f"{self.url}?")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/userdash.html') 
+
+        # Check project_id being equal to -1
+        response = self.client.get(f"{self.url}?project_id=-1")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/userdash.html') 
+
+        # Check project_id does not exist
+        response = self.client.get(f"{self.url}?project_id=8787878")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/userdash.html')
+
+        # Check attempting to access a non-owned project
+        response = self.client.get(f"{self.url}?project_id={self.bad_project.project_id}")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/userdash.html')
+
+        # Check folder_id being not provided
+        response = self.client.get(f"{self.url}?project_id={self.project.project_id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['files']), 1)
+
+        # Check folder_id being set to -1
+        response = self.client.get(f"{self.url}?project_id={self.project.project_id}&folder_id=-1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['files']), 1)
+
+        # Check folder_id being provided and the folder does not exist
+        response = self.client.get(f"{self.url}?project_id={self.project.project_id}&folder_id=48734")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['files']), 0)
+        
+        # Check folder_id being provided and the folder does exist
+        response = self.client.get(f"{self.url}?project_id={self.project.project_id}&folder_id={self.sub_folder.folder_id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['files']), 2)
+
 
 # Integration Tests
 # Class to test project deletion
