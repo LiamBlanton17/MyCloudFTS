@@ -1,9 +1,11 @@
 import os
+import tempfile
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from users.models import Project, Folder, File
 from django.core.exceptions import ValidationError
+from users.functions import get_file_download
 
 # Class to test project creation
 class CreateProjectTests(TestCase):
@@ -54,7 +56,7 @@ class CreateProjectTests(TestCase):
         self.assertEqual(response.status_code, 405) 
         self.assertEqual(response_data['message'], 'Invalid request method')
 
-# Unit Tests
+# White Box Test
 class UserProjectView(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='password')
@@ -183,6 +185,58 @@ class UserProjectView(TestCase):
         response = self.client.get(f"{self.url}?project_id={self.project.project_id}&folder_id={self.sub_folder.folder_id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['files']), 2)
+
+# Black Box Unit Test
+class DownloadFileTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='password')
+        self.client.login(username='testuser', password='password')
+        self.url = reverse('downloadfile')
+
+        self.temp_file = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_file.write(b'This is a test file content.')
+        self.temp_file.close()
+
+        self.project = Project.objects.create(
+            name='Test Project', 
+            description='Test Description', 
+            root_path='testpath'
+        )
+        self.project.user.set([self.user])
+        self.root_folder = Folder.objects.create(
+            project=self.project,
+            path=self.project.root_path,
+            name='Root Folder',
+            is_root=True
+        )
+        self.file = File.objects.create(
+            name="testfile.txt",
+            path=self.temp_file.name,
+            size=os.path.getsize(self.temp_file.name),
+            file_type="text/plain",
+            folder_id=self.root_folder 
+        )
+
+    def tearDown(self):
+        if os.path.exists(self.temp_file.name):
+            os.remove(self.temp_file.name)
+    
+    # Black box unit test of file download
+    def test_file_download(self):
+        # Try to get with no file_id
+        response = get_file_download(None)
+        self.assertEqual(response.status_code, 404)
+        self.assertJSONEqual(response.content, {'message': 'Error! No file_id provided!'})
+
+        # Try to get an invalid file_id
+        response = get_file_download(32422)
+        self.assertEqual(response.status_code, 404)
+        self.assertJSONEqual(response.content, {'message': 'Error! No file in file model!'})
+
+        # Try to get a valid file_id
+        response = get_file_download(self.file.file_id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Disposition'], 'attachment; filename="testfile.txt"')
 
 
 # Integration Tests

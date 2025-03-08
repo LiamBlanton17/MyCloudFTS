@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/post/create_project/', views.create_project, name='createproject'),
 
     path('api/post/upload_file/', views.upload_file, name='uploadfile'),
+    path('api/post/download_file/', views.download_file, name='downloadfile'),
     path('api/post/delete_project/', views.delete_project, name='deleteproject')
     
 

@@ -7,6 +7,7 @@ from users.models import Project, Folder, File
 import json
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from users.functions import get_file_download
 import os
 
 
@@ -279,7 +280,6 @@ def create_project(request):
 
 
 # Delete a project and all its files and folders
-
 @login_required(login_url='/login.html')
 def delete_project(request):
     if request.method != "POST":
@@ -311,5 +311,18 @@ def delete_project(request):
 
         # return JsonResponse({'message': f'Not implemented! Project ID that was going to be deleted: {project_id}'})
     except Exception as e:
-            return JsonResponse({'message': f'Error! {str(e)}'})
+        return JsonResponse({'message': f'Error! {str(e)}'})
 
+
+# View to download a file 
+@login_required(login_url='/login.html')
+def download_file(request):
+    file_id = request.GET.get('file_id')
+    response = get_file_download(file_id)
+    return response
+
+
+# View to download a project
+@login_required(login_url='/login.html')
+def download_project(request):
+    pass
