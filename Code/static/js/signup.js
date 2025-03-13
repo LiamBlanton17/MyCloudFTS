@@ -77,3 +77,7 @@ $(function(){
         });
     });
 });
+module.exports = {
+    getCookie,
+    validateForm,
+};

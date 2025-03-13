@@ -451,6 +451,39 @@ class ProjectModelTest(TestCase):
         self.assertIn(user2, project.user.all())
 
 
+# integration testing combining user authentication, database, api's, and response validation
+# units to be tested:
+# -renameproject view
+# -project's methods
+# -authentication
+# -database operatives
+# -response validation
+class RenameProjectTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testing', password='password') # create testing user
+        self.client.login(username='testing', password='password') # login with testing user
+        
+        # create the test project for renaming 
+        self.project = Project.objects.create(name='testing for integration/renaming', description='description', root_path='testpath')
+        
+        # assigns testing user to the testing project
+        self.project.user.set([self.user])  
+        
+        # defines the url to be used for the test
+        self.url = reverse('renameproject')
+
+    def test_rename_project(self):
+        # dictionary holding project id and new name to send in POST 
+        data = {'project_id': self.project.project_id, 'new_name': 'renamed Project'}
+        
+        response = self.client.post(self.url, data, content_type='application/json')
+        
+        # extracts the data from the response
+        response_data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response_data['message'], 'project was renamed!')
+        updated_project = Project.objects.get(project_id=self.project.project_id)
+        self.assertEqual(updated_project.name, 'renamed Project')
 
         
         

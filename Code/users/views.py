@@ -326,3 +326,26 @@ def download_file(request):
 @login_required(login_url='/login.html')
 def download_project(request):
     pass
+
+# view for renaming a project
+@login_required(login_url='/login.html')
+def rename_project(request):
+    if request.method != "POST":
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+
+        project_id = request.POST.get('project_id')
+        new_name = request.POST.get('new_name')
+        
+        if not new_name or not project_id:
+            return JsonResponse({'message': 'project name and/or new name required!'}, status=400)
+        
+        project = Project.objects.get(project_id = project_id)
+        project.name = new_name
+        project.save()
+        return JsonResponse({'message': 'project was renamed!'}, status=200)
+
+    except Exception as e:
+        return JsonResponse({'message': 'project was not found!'}, status=404)
