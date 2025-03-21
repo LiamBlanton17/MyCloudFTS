@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Project Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/userproject.css' %}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/userdash.js' %}"></script>
+    <script src="{% static 'js/userproject.js' %}"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -62,12 +63,13 @@
           <!-- Projects Section -->
           <div class="projects-header">
             <h2>Files</h2>
-            <button class="new-project-btn">
+            <button class="new-file-btn">
               <i class="fas fa-plus"></i> Upload File
             </button>
+            <input type="file" id="new-file-upload-input">
           </div>
 
-          <!-- Projects Grid -->
+          <!-- File Grid -->
           <div class="projects-grid">
             {% for file in files %}
             <div class="project-card">
@@ -77,32 +79,14 @@
                   >Created: {{ file.date_created|date:"M d, Y" }}</span
                 >
               </div>
-              <p class="project-description">{{ project.description }}</p>
-              <div class="project-members">
-                <h4>Team Members:</h4>
-                <div class="member-avatars">
-                  {% for member in project.members %}
-                  <img
-                    src="{{ member.avatar.url }}"
-                    alt="{{ member.username }}"
-                    title="{{ member.username }}"
-                  />
-                  {% endfor %} {% if project.members %}
-                  <div class="more-members">+{{ project.members }}</div>
-                  {% endif %}
-                </div>
-              </div>
+              <p class="project-description">{{ file.name }}</p>
               <div class="project-actions">
-                <a href="#" class="view-project">View Project</a>
+                <a href="api/post/download_file/?file_id={{ file.file_id }}" class="view-project">Download File</a>
+                <a href="#" class="file-delete" data-file-id="{{ file.file_id }}"><i class="fas fa-trash"></i></a>
                 <a href="#" class="project-settings"
                   ><i class="fas fa-cog"></i
                 ></a>
               </div>
-            </div>
-            {% empty %}
-            <div class="no-projects">
-              <i class="fas fa-folder-open"></i>
-              <p>No files yet. Create or upload your first file!</p>
             </div>
             {% endfor %}
           </div>
@@ -136,7 +120,7 @@
     <!-- Update the script section -->
     <script>
       const modal = document.getElementById("newProjectModal");
-      const btn = document.querySelector(".new-project-btn");
+      //const btn = document.querySelector(".new-project-btn");
       const span = document.getElementsByClassName("close")[0];
       const logoutBtn = document.querySelector(".logout");
 
@@ -159,27 +143,11 @@
           });
       });
 
-      // Add this function to get CSRF token
-      function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-          const cookies = document.cookie.split(";");
-          for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === name + "=") {
-              cookieValue = decodeURIComponent(
-                cookie.substring(name.length + 1)
-              );
-              break;
-            }
-          }
-        }
-        return cookieValue;
-      }
-
+      /*
       btn.onclick = function () {
         modal.style.display = "block";
       };
+      */
 
       // Close modal
       span.onclick = function () {
