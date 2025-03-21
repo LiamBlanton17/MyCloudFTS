@@ -1,0 +1,287 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - MyCloudFTS</title>
+    <!-- Add Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Load CSS -->
+    <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/settings.css' %}" />
+    <!-- Load FontAwesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/userdash.js' %}"></script>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Sidebar navigation -->
+      <div class="sidebar" id="sidebar">
+        <div class="logo">
+          <h2>Dashboard</h2>
+        </div>
+        <nav class="nav-menu">
+          <ul>
+            <li>
+              <a href="{% url 'landingpage' %}"
+                ><i class="fas fa-home"></i> Home</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'dashboard' %}"
+                ><i class="fas fa-project-diagram"></i> Projects</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'profile' %}"
+                ><i class="fas fa-user"></i> Profile</a
+              >
+            </li>
+            <li class="active">
+              <a href="{% url 'settings' %}"
+                ><i class="fas fa-cog"></i> Settings</a
+              >
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-envelope"></i> Messages</a>
+            </li>
+            <li class="logout">
+              <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+          <div class="search-bar">
+            <input type="text" placeholder="Search..." />
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="user-info">
+            <span class="user-name">Welcome, {{ user.first_name }}</span>
+          </div>
+        </header>
+
+        <!-- Settings Content -->
+        <div class="dashboard-content">
+          <div class="settings-header">
+            <h2>Settings</h2>
+          </div>
+
+          <div class="settings-container">
+            <!-- Account Settings Section -->
+            <div class="settings-section">
+              <h3>Account Settings</h3>
+              <div class="settings-card">
+                <div class="settings-item">
+                  <h4>Personal Information</h4>
+                  <p>Update your name, email, and other personal details</p>
+                  <button class="settings-btn">Edit</button>
+                </div>
+                <div class="settings-item">
+                  <h4>Password</h4>
+                  <p>Change your password</p>
+                  <button class="settings-btn">Change</button>
+                </div>
+                <div class="settings-item">
+                  <h4>Email Notifications</h4>
+                  <p>Manage your email notification preferences</p>
+                  <button class="settings-btn">Configure</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Appearance Settings Section -->
+            <div class="settings-section">
+              <h3>Appearance</h3>
+              <div class="settings-card">
+                <div class="settings-item">
+                  <h4>Theme</h4>
+                  <p>Choose between light and dark mode</p>
+                  <div class="theme-toggle">
+                    <button class="theme-btn active" data-theme="light">
+                      Light
+                    </button>
+                    <button class="theme-btn" data-theme="dark">Dark</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Privacy Settings Section -->
+            <div class="settings-section">
+              <h3>Privacy & Security</h3>
+              <div class="settings-card">
+                <div class="settings-item">
+                  <h4>Two-Factor Authentication</h4>
+                  <p>Add an extra layer of security to your account</p>
+                  <button class="settings-btn">Setup</button>
+                </div>
+                <div class="settings-item">
+                  <h4>Connected Apps</h4>
+                  <p>Manage apps that have access to your account</p>
+                  <button class="settings-btn">Manage</button>
+                </div>
+                <div class="settings-item">
+                  <h4>Data & Privacy</h4>
+                  <p>Manage how your data is used and stored</p>
+                  <button class="settings-btn">View</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Storage Settings Section -->
+            <div class="settings-section">
+              <h3>Storage</h3>
+              <div class="settings-card">
+                <div class="settings-item">
+                  <h4>Storage Usage</h4>
+                  <div class="storage-meter">
+                    <div class="storage-bar">
+                      <div class="storage-fill" style="width: 35%"></div>
+                    </div>
+                    <div class="storage-info">
+                      <span>3.5 GB used</span>
+                      <span>of 10 GB</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="settings-item">
+                  <h4>Upgrade Storage</h4>
+                  <p>Need more space? Upgrade your storage plan</p>
+                  <button class="settings-btn upgrade-btn">Upgrade</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for editing personal information -->
+    <div id="personalInfoModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Personal Information</h2>
+        <form id="personalInfoForm">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input
+              type="text"
+              id="firstName"
+              name="first_name"
+              value="{{ user.first_name }}"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input
+              type="text"
+              id="lastName"
+              name="last_name"
+              value="{{ user.last_name }}"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value="{{ user.email }}"
+              required
+            />
+          </div>
+          <button type="submit" class="submit-btn">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Toggle theme functionality
+      document.querySelectorAll(".theme-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          document
+            .querySelectorAll(".theme-btn")
+            .forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+          // Here you would implement actual theme switching logic
+        });
+      });
+
+      // Handle modal for personal information
+      const personalInfoBtn = document.querySelector(
+        ".settings-item:nth-child(1) .settings-btn"
+      );
+      const personalInfoModal = document.getElementById("personalInfoModal");
+      const closePersonalInfo = personalInfoModal.querySelector(".close");
+
+      personalInfoBtn.addEventListener("click", function () {
+        personalInfoModal.style.display = "block";
+      });
+
+      closePersonalInfo.addEventListener("click", function () {
+        personalInfoModal.style.display = "none";
+      });
+
+      window.addEventListener("click", function (event) {
+        if (event.target == personalInfoModal) {
+          personalInfoModal.style.display = "none";
+        }
+      });
+
+      // Handle logout
+      document.querySelector(".logout").addEventListener("click", function (e) {
+        e.preventDefault();
+        fetch("/api/post/logout/", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              window.location.href = "/login.html";
+            }
+          })
+          .catch((error) => {
+            console.error("Logout failed:", error);
+          });
+      });
+
+      // Function to get CSRF token
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+    </script>
+  </body>
+</html>

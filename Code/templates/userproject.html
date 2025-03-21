@@ -23,17 +23,25 @@
         </div>
         <nav class="nav-menu">
           <ul>
+            <li>
+              <a href="{% url 'landingpage' %}"
+                ><i class="fas fa-home"></i> Home</a
+              >
+            </li>
             <li class="active">
-              <a href="{% url 'landingpage' %}"><i class="fas fa-home"></i> Home</a>
+              <a href="{% url 'dashboard' %}"
+                ><i class="fas fa-project-diagram"></i> Projects</a
+              >
             </li>
             <li>
-              <a href="{% url 'dashboard' %}"><i class="fas fa-project-diagram"></i> Projects</a>
+              <a href="{% url 'profile' %}"
+                ><i class="fas fa-user"></i> Profile</a
+              >
             </li>
             <li>
-              <a href="{% url 'profile' %}"><i class="fas fa-user"></i> Profile</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-cog"></i> Settings</a>
+              <a href="{% url 'settings' %}"
+                ><i class="fas fa-cog"></i> Settings</a
+              >
             </li>
             <li>
               <a href="#"><i class="fas fa-envelope"></i> Messages</a>
@@ -66,7 +74,7 @@
             <button class="new-file-btn">
               <i class="fas fa-plus"></i> Upload File
             </button>
-            <input type="file" id="new-file-upload-input">
+            <input type="file" id="new-file-upload-input" />
           </div>
 
           <!-- File Grid -->
@@ -81,11 +89,38 @@
               </div>
               <p class="project-description">{{ file.name }}</p>
               <div class="project-actions">
-                <a href="api/post/download_file/?file_id={{ file.file_id }}" class="view-project">Download File</a>
-                <a href="#" class="file-delete" data-file-id="{{ file.file_id }}"><i class="fas fa-trash"></i></a>
-                <a href="#" class="project-settings"
-                  ><i class="fas fa-cog"></i
-                ></a>
+                <a
+                  href="api/post/download_file/?file_id={{ file.file_id }}"
+                  class="view-project"
+                  >Download File</a
+                >
+
+                <div class="dropdown">
+                  <button
+                    class="dropdown-toggle"
+                    data-file-id="{{ file.file_id }}"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu">
+                    <a
+                      href="#"
+                      class="file-delete"
+                      data-file-id="{{ file.file_id }}"
+                    >
+                      <i class="fas fa-trash"></i> Delete File
+                    </a>
+                    <a
+                      href="#"
+                      class="file-settings"
+                      data-file-id="{{ file.file_id }}"
+                    >
+                      <i class="fas fa-cog"></i> File Settings
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
             {% endfor %}
