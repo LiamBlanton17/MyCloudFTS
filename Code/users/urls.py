@@ -14,6 +14,7 @@ urlpatterns = [
     path('userproject.html', views.userproject, name='userproject'),
     path('profile.html', views.profile, name='profile'),
     path('profile/<str:username>/', views.profile, name='profile'),
+    path('settings.html', views.settings, name='settings'),
     
     # path('delete_project/<int:project_id>/', views.delete_project, name='delete_project'),
 

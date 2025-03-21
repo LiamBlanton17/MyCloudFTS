@@ -50,4 +50,51 @@ $(() => {
             }
         });
     });
+    
+    // Dropdown functionality for userproject.html
+    $(document).on('click', '.dropdown-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Close all other dropdowns first
+        $('.dropdown-menu').not($(this).next('.dropdown-menu')).removeClass('show');
+        $('.dropdown-toggle').not(this).attr('aria-expanded', 'false');
+        
+        // Toggle this dropdown with clear visual feedback
+        const $menu = $(this).next('.dropdown-menu');
+        $menu.toggleClass('show');
+        
+        // Update aria state
+        const expanded = $menu.hasClass('show');
+        $(this).attr('aria-expanded', expanded);
+        
+        console.log('Dropdown ' + (expanded ? 'opened' : 'closed'));
+    });
+    
+    // Close dropdown when clicking elsewhere
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.dropdown').length) {
+            $('.dropdown-menu').removeClass('show');
+            $('.dropdown-toggle').attr('aria-expanded', 'false');
+        }
+    });
+    
+    // Initialize dropdowns
+    $('.dropdown-menu').removeClass('show');
+    $('.dropdown-toggle').attr('aria-expanded', 'false');
+    
+    // Handle file deletion
+    $(document).on('click', '.file-delete', function(e) {
+        e.preventDefault();
+        const file_id = $(this).data('file-id');
+        if(!file_id){
+            console.log('File ID not found');
+            return;
+        }
+        
+        if (confirm('Are you sure you want to delete this file?')) {
+            // Your delete file AJAX call here
+            console.log('Delete file ID:', file_id);
+        }
+    });
 });

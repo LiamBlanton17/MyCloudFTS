@@ -32,12 +32,12 @@
         </div>
         <nav class="nav-menu">
           <ul>
-            <li class="active">
+            <li>
               <a href="{% url 'landingpage' %}"
                 ><i class="fas fa-home"></i> Home</a
               >
             </li>
-            <li>
+            <li class="active">
               <a href="{% url 'dashboard' %}"
                 ><i class="fas fa-project-diagram"></i> Projects</a
               >
@@ -48,7 +48,9 @@
               >
             </li>
             <li>
-              <a href="#"><i class="fas fa-cog"></i> Settings</a>
+              <a href="{% url 'settings' %}"
+                ><i class="fas fa-cog"></i> Settings</a
+              >
             </li>
             <li>
               <a href="#"><i class="fas fa-envelope"></i> Messages</a>
@@ -85,7 +87,7 @@
 
           <!-- Projects Grid -->
           <div class="projects-grid">
-            {% for project in projects %}
+            {% if projects %} {% for project in projects %}
             <div class="project-card">
               <div class="project-card-header">
                 <h3>{{ project.name }}</h3>
@@ -109,19 +111,49 @@
                 </div>
               </div>
               <div class="project-actions">
-                <a href="./userproject.html?project_id={{ project.project_id }}" class="view-project">View Project</a>
+                <a
+                  href="./userproject.html?project_id={{ project.project_id }}"
+                  class="view-project"
+                  >View Project</a
+                >
 
-                <button type="button" class="delete-project-btn" data-project-id="{{ project.project_id }}"><i class="fas fa-trash"></i></button>
-                <a href="#" class="project-settings"><i class="fas fa-cog"></i></a>
-                  
+                <div class="dropdown">
+                  <button
+                    class="dropdown-toggle"
+                    data-project-id="{{ project.project_id }}"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    aria-label="Project options"
+                  >
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu" role="menu">
+                    <a
+                      href="#"
+                      class="add-member-btn"
+                      data-project-id="{{ project.project_id }}"
+                      role="menuitem"
+                    >
+                      <i class="fas fa-user-plus"></i> Add Member
+                    </a>
+                    <a
+                      href="#"
+                      class="delete-project-link"
+                      data-project-id="{{ project.project_id }}"
+                      role="menuitem"
+                    >
+                      <i class="fas fa-trash"></i> Delete Project
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-            {% empty %}
-            <div class="no-projects">
+            {% endfor %} {% else %}
+            <div class="no-projects" id="no-projects-message">
               <i class="fas fa-folder-open"></i>
               <p>No projects yet. Create your first project!</p>
             </div>
-            {% endfor %}
+            {% endif %}
           </div>
 
           <!-- New Project Modal -->
@@ -146,15 +178,39 @@
               </form>
             </div>
           </div>
+
+          <!-- Add Member Modal -->
+          <div id="addMemberModal" class="modal">
+            <div class="modal-content">
+              <span class="close-member-modal">&times;</span>
+              <h2>Add Team Member</h2>
+              <form id="addMemberForm">
+                <input type="hidden" id="memberProjectId" name="project_id" />
+                <div class="form-group">
+                  <label for="memberEmail">Member Email</label>
+                  <input
+                    type="email"
+                    id="memberEmail"
+                    name="email"
+                    required
+                    placeholder="Enter email address"
+                  />
+                </div>
+                <button class="submit-btn" id="addMemberBtn">Add Member</button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Update the script section -->
     <script>
-      const modal = document.getElementById("newProjectModal");
+      const projectModal = document.getElementById("newProjectModal");
+      const memberModal = document.getElementById("addMemberModal");
       const btn = document.querySelector(".new-project-btn");
       const span = document.getElementsByClassName("close")[0];
+      const memberSpan = document.querySelector(".close-member-modal");
       const logoutBtn = document.querySelector(".logout");
 
       // Prevent the logout link from navigating
@@ -195,18 +251,28 @@
       }
 
       btn.onclick = function () {
-        modal.style.display = "block";
+        projectModal.style.display = "block";
       };
 
-      // Close modal
+      // Close project modal
       span.onclick = function () {
-        modal.style.display = "none";
+        projectModal.style.display = "none";
       };
 
-      // Close modal when clicking outside
+      // Close member modal
+      if (memberSpan) {
+        memberSpan.onclick = function () {
+          memberModal.style.display = "none";
+        };
+      }
+
+      // Close modals when clicking outside
       window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
+        if (event.target == projectModal) {
+          projectModal.style.display = "none";
+        }
+        if (event.target == memberModal) {
+          memberModal.style.display = "none";
         }
       };
     </script>

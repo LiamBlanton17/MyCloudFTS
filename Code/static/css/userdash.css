@@ -263,8 +263,9 @@ body {
 
 .project-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 10px;
   margin-top: 15px;
   padding-top: 15px;
   border-top: 1px solid #eef2f7;
@@ -298,6 +299,15 @@ body {
   border-radius: 15px;
   color: var(--text-secondary);
   box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
+}
+
+.no-projects.hidden {
+  display: none;
 }
 
 .no-projects i {
@@ -434,4 +444,136 @@ body {
     margin: 5% auto;
     width: 95%;
   }
+}
+
+/* Dropdown Menu Styles */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-left: auto; /* Push the dropdown to the right */
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.dropdown-toggle:hover,
+.dropdown-toggle:focus {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: var(--text-primary);
+  outline: none;
+}
+
+/* Active state for dropdown button when menu is open */
+.dropdown-toggle[aria-expanded="true"] {
+  background-color: rgba(74, 144, 226, 0.15);
+  color: var(--primary-color);
+  box-shadow: 0 0 0 1px rgba(74, 144, 226, 0.2);
+}
+
+.dropdown-toggle i {
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-toggle[aria-expanded="true"] i {
+  transform: rotate(90deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 5px);
+  background-color: white;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  padding: 8px 0;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-5px) scale(0.97);
+  transition: transform 0.2s cubic-bezier(0.3, 0, 0.2, 1),
+    opacity 0.2s cubic-bezier(0.3, 0, 0.2, 1), visibility 0s linear 0.2s;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  transform: rotate(45deg);
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+    opacity 0.25s cubic-bezier(0.2, 0, 0, 1), visibility 0s linear 0s;
+}
+
+.dropdown-menu a {
+  color: var(--text-primary);
+  padding: 10px 16px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 0.15s ease;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dropdown-menu a:hover {
+  background-color: rgba(74, 144, 226, 0.08);
+}
+
+.dropdown-menu i {
+  width: 16px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.dropdown-menu a.delete-project-link {
+  color: #e74c3c;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-menu a.delete-project-link:hover {
+  background-color: rgba(231, 76, 60, 0.08);
+}
+
+.delete-project-link i {
+  color: #e74c3c;
+}
+
+/* Button to open Add Member modal */
+.add-member-btn i {
+  color: var(--primary-color);
+}
+
+.project-actions .dropdown {
+  position: relative;
+  margin-left: auto;
 }

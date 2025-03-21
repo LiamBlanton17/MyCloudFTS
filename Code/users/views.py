@@ -26,10 +26,17 @@ def profile(request):
 
 @login_required(login_url='/login.html')
 def dashboard(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    projects = request.user.projects.all().order_by('-date_created')
-    return render(request, 'userdash.html', {'user': request.user, 'projects': projects})
+    # The login_required decorator already ensures the user is authenticated
+    try:
+        # Try to fetch projects or handle potential errors
+        projects = list(request.user.projects.all().order_by('-date_created'))
+        # Converting to list ensures the query is executed and any errors appear here
+        return render(request, 'userdash.html', {'user': request.user, 'projects': projects})
+    except Exception as e:
+        # Log the error and provide a fallback
+        print(f"Error fetching projects: {str(e)}")
+        # Return an empty list of projects as fallback
+        return render(request, 'userdash.html', {'user': request.user, 'projects': []})
 
 
 @login_required(login_url='/login.html')
@@ -349,3 +356,8 @@ def rename_project(request):
 
     except Exception as e:
         return JsonResponse({'message': 'project was not found!'}, status=404)
+
+
+@login_required(login_url='/login.html')
+def settings(request):
+    return render(request, 'settings.html', {'user': request.user})
