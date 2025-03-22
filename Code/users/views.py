@@ -3,12 +3,16 @@ from django.http import HttpResponse, JsonResponse
 from django.db import connection
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from users.models import Project, Folder, File
+from users.models import Project, Folder, File, InviteKeys
 import json
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from users.functions import get_file_download
+from django.core.mail import send_mail
 import os
+import secrets
+from django.utils import timezone
+from datetime import timedelta
 
 
 User = get_user_model()  # Get Django's built-in User model
@@ -365,6 +369,92 @@ def download_file(request):
 @login_required(login_url='/login.html')
 def download_project(request):
     pass
+    
+
+# View to invite a user to a project
+@login_required(login_url='/login.html')
+def invite_to_project(request):
+    try:
+        project_id = request.GET.get('project_id')
+        invite_email = request.GET.get('invite_email')
+
+        if not project_id:
+            raise ValueError('No project ID provided.')
+        
+        if not invite_email:
+            raise ValueError('No email to invite to was provided.')
+        
+        # Verify the email is a valid user
+        invited_user = User.objects.filter(email=invite_email)
+        if not invited_user.exists():
+            raise ValueError('Email provided was not a valid user.')
+        
+        # Verify the project is a valid project owned by the user trying to share it
+        project = Project.objects.filter(project_id=project_id, user=request.user)
+        if not project.exists():
+            raise ValueError('Project ID provided is invalid or is not owned by user attempting to share it.')
+        
+        # We now verify we have a project_id and a valid email, send email to user.
+        # Email link will have a key that will add a user to a project when clicked
+        project = project.first()
+        from_email = request.user.email
+
+        # Create a key that will allow the user to join the project
+        key = secrets.token_hex(32)
+        InviteKeys.objects.create(
+            key = key,
+            user = invited_user,
+            project = project,
+        ).save()
+
+
+        # Create a new model that will verify that this url is valid
+        link = f'/api/post/join_project/?key={key}'
+        invite_link = request.build_absolute_uri(link)
+
+        send_mail(
+            "MyCloudFTS: Project Invite!", 
+            f"You have been invited to {project.name}! Click the link to join: {invite_link}",
+            "no-reply@MyCloudFTS.com", 
+            [invite_email],
+            html_message=f"You have been invited to <b>{project.name}</b>! Click <a href='{invite_link}'>here</a> to join!"
+        )
+
+        return JsonResponse({'message': f'Successfully sent project invite!'}, status=200)
+    except Exception as e:
+        return JsonResponse({'message': f'Error! {str(e)}'}, status=400)
+    
+
+# View to join a project. Point to this logic from the link in the email from a project invite
+def join_project(request):
+    try:
+        # Verify a key was given and that is was valid
+        key = request.GET.get('key')
+        if not key:
+            raise ValueError('No key provided.')
+        
+        invite = InviteKeys.objects.filter(key = key).first()
+        if not invite:
+            raise ValueError('Invalid key provided.')
+
+        # Verify the input is within a day old - right now just invalidate after 24 hours
+        if timezone.now() > invite.date_created + timedelta(hours=24):
+            raise ValueError('Key has expired (more than 24 hours since the invite was sent)!')
+
+        # Verify the project is a valid project
+        invited_user = invite.user
+        invited_project = invite.project
+
+        if not invited_project or not invited_user:
+            raise ValueError('Project or user did not exist.')
+        
+        # Add the user to the project
+        invited_project.members.add(invited_user)
+
+        return JsonResponse({'message': f'Successfully joined the project!'}, status=200)
+    except Exception as e:
+        return JsonResponse({'message': f'Error! {str(e)}'}, status=400)
+
 
 # view for renaming a project
 @login_required(login_url='/login.html')
