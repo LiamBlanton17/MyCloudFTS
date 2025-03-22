@@ -94,7 +94,29 @@ $(() => {
         
         if (confirm('Are you sure you want to delete this file?')) {
             // Your delete file AJAX call here
-            console.log('Delete file ID:', file_id);
+            $.ajax({
+                url: `/api/post/delete_file/`,
+                type: 'POST',
+                data: JSON.stringify({ 
+                    action: 'delete',
+                    file_id: file_id
+                }),  
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(response) {
+                    console.log('Success:', response);
+                    location.reload();  // Reload the page after deletion
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error:', error);
+                    console.log('Status:', status);
+                    console.log('XHR:', xhr);
+                    console.log('Delete file ID:', file_id);
+                }
+            });
         }
     });
 });
