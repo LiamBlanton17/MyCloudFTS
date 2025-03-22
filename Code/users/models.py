@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+
 class Project(models.Model):
     project_id = models.AutoField(primary_key=True)
     root_path = models.CharField(max_length=255)
@@ -43,3 +44,11 @@ class File(models.Model):
 
     def __str__(self):
         return f"File: {self.name} ({self.size} bytes, {self.file_type})"
+
+
+class InviteKeys(models.Model):
+    key = models.CharField(primary_key=True, max_length=64)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+

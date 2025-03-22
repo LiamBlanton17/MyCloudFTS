@@ -29,5 +29,7 @@ urlpatterns = [
     path('api/post/download_file/', views.download_file, name='downloadfile'),
     path('api/post/delete_project/', views.delete_project, name='deleteproject'),
     
-    path('api/post/rename_project', views.rename_project, name='renameproject')
+    path('api/post/rename_project', views.rename_project, name='renameproject'),
+    path('api/post/invite_to_project/', views.invite_to_project, name='invitetoproject'),
+    path('api/post/join_project/', views.join_project, name='joinproject'),
 ]
