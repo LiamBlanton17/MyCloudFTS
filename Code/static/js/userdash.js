@@ -137,6 +137,7 @@ $(() => {
                         console.log('Error:', error);
                         console.log('Status:', status);
                         console.log('XHR:', xhr);
+                        console.log('Delete project ID:', project_id);
                     }
                 });
             }
