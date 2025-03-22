@@ -87,7 +87,9 @@
                   >Created: {{ file.date_created|date:"M d, Y" }}</span
                 >
               </div>
-              <p class="project-description">{{ file.name }}</p>
+                <p class="project-description">{{ file.name }}</p>
+                <p class="file-type">File Type: {{ file.file_type }}</p>
+                <p class="file-size">File Size: {{ file.size }} bytes</p>
               <div class="project-actions">
                 <a
                   href="api/post/download_file/?file_id={{ file.file_id }}"

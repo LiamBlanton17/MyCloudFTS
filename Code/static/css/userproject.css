@@ -1,3 +1,14 @@
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #f8f9fa;
+  --text-primary: #2c3e50;
+  --text-secondary: #6c757d;
+  --sidebar-bg: #2c3e50;
+  --sidebar-hover: #34495e;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+}
+
 .new-file-btn {
   background-color: var(--primary-color);
   color: white;
@@ -21,4 +32,13 @@
   background-color: #357abd;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(74, 144, 226, 0.2);
+}
+
+/* Not Styling Correctly */
+.project-description,
+.file-type,
+.file-size {
+    font-size: 0.9rem; /* Slightly smaller font size */
+    color: #6c757d; /* Light grey color */
+    margin: 5px 0; /* Add some spacing between lines */
 }
