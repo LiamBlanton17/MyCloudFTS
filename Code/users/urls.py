@@ -33,4 +33,5 @@ urlpatterns = [
     path('api/post/rename_project', views.rename_project, name='renameproject'),
     path('api/post/invite_to_project/', views.invite_to_project, name='invitetoproject'),
     path('api/post/join_project/', views.join_project, name='joinproject'),
+    path('api/post/send_mail/', views.confirmation_mail, name='send_mail'),
 ]

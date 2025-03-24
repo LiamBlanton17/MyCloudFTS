@@ -9,10 +9,14 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from users.functions import get_file_download
 from django.core.mail import send_mail
+from django.core.mail import send_mail as confirm_send_mail
 import os
 import secrets
 from django.utils import timezone
 from datetime import timedelta
+
+# get rid of this LOL vvvvv
+from django.views.decorators.csrf import csrf_exempt
 
 
 User = get_user_model()  # Get Django's built-in User model
@@ -483,3 +487,19 @@ def rename_project(request):
 @login_required(login_url='/login.html')
 def settings(request):
     return render(request, 'settings.html', {'user': request.user})
+
+# view for sending email confirmation to subscribers
+@csrf_exempt
+def confirmation_mail(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            userEmail = data.get('email')
+            # message to include pricing selection
+            subject = 'MyCloudFTS Confirmation'
+            message = 'Thank you for choosing MyCloudFTS, your account and subscription model has been confirmed!'
+            confirm_send_mail(subject, message, 'mycloudfts@gmail.com', [userEmail])
+            return JsonResponse({'message': 'email was sent!'})
+        except Exception as e:
+            return JsonResponse({'message': 'email was not sent!'})
+            

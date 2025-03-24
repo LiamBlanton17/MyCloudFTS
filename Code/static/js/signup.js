@@ -77,6 +77,22 @@ $(function(){
         });
     });
 });
+
+function send_mail(){
+    const email = document.getElementById('email').value;
+    fetch('api/post/send_mail/', 
+        { method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email: email})
+        }
+    )
+    .then(response => response.json())
+    .then(data => {alert(data.message || data.error);})
+    .catch(error => console.error('error: ', error));
+};
+
 module.exports = {
     getCookie,
     validateForm,
