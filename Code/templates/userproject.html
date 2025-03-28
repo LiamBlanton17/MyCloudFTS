@@ -58,7 +58,11 @@
         <!-- Top Header -->
         <header class="top-header">
           <div class="search-bar">
-            <input type="text" placeholder="Search..." />
+            <input
+              type="text"
+              placeholder="Search files..."
+              aria-label="Search files"
+            />
             <i class="fas fa-search"></i>
           </div>
           <div class="user-info">
@@ -71,59 +75,138 @@
           <!-- Projects Section -->
           <div class="projects-header">
             <h2>Files</h2>
-            <button class="new-file-btn">
-              <i class="fas fa-plus"></i> Upload File
+            <button class="new-file-btn" id="uploadFilesBtn">
+              <i class="fas fa-cloud-upload-alt"></i> Upload Files
             </button>
-            <input type="file" id="new-file-upload-input" />
+            <input type="file" id="new-file-upload-input" multiple />
+          </div>
+
+          <!-- File Upload Modal -->
+          <div id="fileUploadModal" class="modal">
+            <div class="modal-content upload-modal">
+              <span class="close">&times;</span>
+              <h2>Upload Files</h2>
+
+              <!-- File Upload Zone -->
+              <div class="file-upload-zone" id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p class="upload-text">Drag and drop files here</p>
+                <p class="upload-hint">or click to select files</p>
+                <div class="upload-progress">
+                  <div class="upload-progress-bar" style="width: 0%"></div>
+                </div>
+                <p class="upload-status"></p>
+              </div>
+            </div>
           </div>
 
           <!-- File Grid -->
-          <div class="projects-grid">
+          <div class="file-grid">
             {% for file in files %}
-            <div class="project-card">
-              <div class="project-card-header">
-                <h3>{{ file.name }}</h3>
-                <span class="project-date"
-                  >Created: {{ file.date_created|date:"M d, Y" }}</span
+            <div class="file-card file-type-{{ file.file_type|lower }}">
+              <!-- Dropdown Menu -->
+              <div class="dropdown">
+                <button
+                  class="dropdown-toggle"
+                  data-file-id="{{ file.file_id }}"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  aria-label="File options"
                 >
-              </div>
-                <p class="project-description">{{ file.name }}</p>
-                <p class="file-type">File Type: {{ file.file_type }}</p>
-                <p class="file-size">File Size: {{ file.size }} bytes</p>
-              <div class="project-actions">
-                <a
-                  href="api/post/download_file/?file_id={{ file.file_id }}"
-                  class="view-project"
-                  >Download File</a
-                >
-
-                <div class="dropdown">
-                  <button
-                    class="dropdown-toggle"
-                    data-file-id="{{ file.file_id }}"
-                    aria-haspopup="true"
-                    aria-expanded="false"
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="dropdown-menu" role="menu">
+                  <a
+                    href="api/post/download_file/?file_id={{ file.file_id }}"
+                    class="download-btn"
+                    role="menuitem"
                   >
-                    <i class="fas fa-ellipsis-v"></i>
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenu">
-                    <a
-                      href="#"
-                      class="file-delete"
-                      data-file-id="{{ file.file_id }}"
-                    >
-                      <i class="fas fa-trash"></i> Delete File
-                    </a>
-                    <a
-                      href="#"
-                      class="file-settings"
-                      data-file-id="{{ file.file_id }}"
-                    >
-                      <i class="fas fa-cog"></i> File Settings
-                    </a>
-                  </div>
+                    <i class="fas fa-download"></i> Download
+                  </a>
+                  <a
+                    href="#"
+                    class="share-btn"
+                    data-file-id="{{ file.file_id }}"
+                    role="menuitem"
+                  >
+                    <i class="fas fa-share"></i> Share
+                  </a>
+                  <a
+                    href="#"
+                    class="rename-btn"
+                    data-file-id="{{ file.file_id }}"
+                    role="menuitem"
+                  >
+                    <i class="fas fa-edit"></i> Rename
+                  </a>
+                  <a
+                    href="#"
+                    class="file-delete"
+                    data-file-id="{{ file.file_id }}"
+                    role="menuitem"
+                  >
+                    <i class="fas fa-trash"></i> Delete
+                  </a>
                 </div>
               </div>
+
+              <!-- Thumbnail -->
+              <div class="file-thumbnail">
+                {% if file.file_type == 'IMAGE' %}
+                <img
+                  src="{{ file.url }}"
+                  alt="{{ file.name }}"
+                  loading="lazy"
+                />
+                {% else %}
+                <div class="file-icon">
+                  {% if file.file_type == 'PDF' %}
+                  <i class="fas fa-file-pdf"></i>
+                  {% elif file.file_type == 'DOCUMENT' %}
+                  <i class="fas fa-file-word"></i>
+                  {% elif file.file_type == 'SPREADSHEET' %}
+                  <i class="fas fa-file-excel"></i>
+                  {% elif file.file_type == 'ARCHIVE' %}
+                  <i class="fas fa-file-archive"></i>
+                  {% else %}
+                  <i class="fas fa-file"></i>
+                  {% endif %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- File Content -->
+              <div class="file-card-content">
+                <div class="file-card-header">
+                  <div class="file-info">
+                    <h3 class="file-name">{{ file.name }}</h3>
+                    <div class="file-type-badge">
+                      {{ file.file_type }}
+                      <span class="file-size-badge"
+                        >{{ file.size|filesizeformat }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="file-meta">
+                  <span class="file-date">
+                    <i class="far fa-calendar"></i>
+                    <span class="date-text"
+                      >{{ file.date_created|date:"M d, Y" }}</span
+                    >
+                  </span>
+                  <span class="file-owner">
+                    <i class="far fa-user"></i>
+                    {{ file.uploaded_by|default:"Me" }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <div class="no-files-message">
+              <i class="fas fa-folder-open"></i>
+              <p>No files uploaded yet</p>
+              <p class="upload-hint">Upload your first file to get started</p>
             </div>
             {% endfor %}
           </div>
@@ -197,6 +280,33 @@
           modal.style.display = "none";
         }
       };
+
+      // Format dates for all file cards
+      document.addEventListener("DOMContentLoaded", function () {
+        const dateElements = document.querySelectorAll(".date-text");
+        const formattedDate = new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+
+        //i need this to push again so lets see 
+        //i need this to push again so lets see 
+        //i need this to push again so lets see 
+        //i need this to push again so lets see 
+        //i need this to push again so lets see 
+        //i need this to push again so lets see 
+        //i need this to push again so lets see 
+        //i need this to push again so lets see 
+        //i need this to push again so lets see   
+        
+
+
+
+        dateElements.forEach((element) => {
+          element.textContent = formattedDate;
+        });
+      });
     </script>
   </body>
 </html>
