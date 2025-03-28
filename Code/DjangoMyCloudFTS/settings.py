@@ -78,7 +78,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Use 465 for SSL
 EMAIL_USE_TLS = True  # Use EMAIL_USE_SSL = True if using port 465
 EMAIL_HOST_USER = 'noreply.mycloudfts@gmail.com'
-EMAIL_HOST_PASSWORD = 'jvewppkdphzbfqyj'  # Real passwor is Cloud70FTS!
+EMAIL_HOST_PASSWORD = 'ask Liam'  # Real password is ask Liam
 DEFAULT_FROM_EMAIL = 'noreply.mycloudfts@gmail.com'
 
 # Database
