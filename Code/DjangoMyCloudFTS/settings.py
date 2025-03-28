@@ -72,6 +72,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'DjangoMyCloudFTS.wsgi.application'
 
+# Email server connection
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  # Use 465 for SSL
+EMAIL_USE_TLS = True  # Use EMAIL_USE_SSL = True if using port 465
+EMAIL_HOST_USER = 'noreply.mycloudfts@gmail.com'
+EMAIL_HOST_PASSWORD = 'jvewppkdphzbfqyj'  # Real passwor is Cloud70FTS!
+DEFAULT_FROM_EMAIL = 'noreply.mycloudfts@gmail.com'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -137,13 +145,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Files
 MEDIA_URL = '/media/'  # URL for accessing uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory to store uploaded files
-
-# email 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'mycloudfts@gmail.com' 
-EMAIL_HOST_PASSWORD = 'fihr pben qrgz rxsv'
-
- 

@@ -47,7 +47,6 @@ $(() => {
         $(document).on('click', '.dropdown-toggle', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
             const $this = $(this);
             const $menu = $this.next('.dropdown-menu');
             const wasOpen = $menu.hasClass('show');
@@ -137,7 +136,6 @@ $(() => {
                         console.log('Error:', error);
                         console.log('Status:', status);
                         console.log('XHR:', xhr);
-                        console.log('Delete project ID:', project_id);
                     }
                 });
             }
@@ -181,21 +179,17 @@ $(() => {
                 alert('Please enter an email address');
                 return;
             }
+
+            if (!project_id) {
+                alert('Error: no project id was found.');
+                return;
+            }
             
             console.log(`Adding member with email ${email} to project ${project_id}`);
-            
-            // Here you would typically make an AJAX call to add the member
-            // For now we'll just show a success message
-            alert(`Invitation sent to ${email}`);
-            
-            // Close the modal and reset the form
-            memberModal.style.display = "none";
-            $('#addMemberForm').trigger("reset");
-            
-            /* 
+
             // Uncomment this when you have a backend endpoint
             $.ajax({
-                url: '/api/post/add_project_member/',
+                url: '/api/post/invite_to_project/',
                 type: 'POST',
                 data: JSON.stringify({
                     project_id: project_id,
@@ -217,11 +211,17 @@ $(() => {
                     alert('Failed to add member. Please try again.');
                 }
             });
-            */
+
+            alert(`Invitation sent to ${email}`);
+            
+            // Close the modal and reset the form
+            memberModal.style.display = "none";
+            $('#addMemberForm').trigger("reset");
+            
         });
         
         // Create Project Form submission
-        $('.submit-btn').on("click", function(e){
+        $('#submit-btn').on("click", function(e){
             console.log('Create Project Button Clicked');
             e.preventDefault();
             if(!validateForm()){

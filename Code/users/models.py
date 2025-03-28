@@ -45,7 +45,6 @@ class File(models.Model):
     def __str__(self):
         return f"File: {self.name} ({self.size} bytes, {self.file_type})"
 
-
 class InviteKeys(models.Model):
     key = models.CharField(primary_key=True, max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
