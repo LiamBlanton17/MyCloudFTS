@@ -99,15 +99,14 @@
               <div class="project-members">
                 <h4>Team Members:</h4>
                 <div class="member-avatars">
-                  {% for member in project.members %}
+                  {% for user in project.user.all %}
                   <img
-                    src="{{ member.avatar.url }}"
-                    alt="{{ member.username }}"
-                    title="{{ member.username }}"
+                    src="{{ user.avatar.url }}"
+                    alt="{{ user.username }}"
+                    title="{{ user.username }}"
                   />
-                  {% endfor %} {% if project.members %}
-                  <div class="more-members">+{{ project.members }}</div>
-                  {% endif %}
+                 <!-- <div>{{ user.username }}</div>-->
+                  {% endfor %}
                 </div>
               </div>
               <div class="project-actions">
@@ -174,7 +173,7 @@
                     rows="4"
                   ></textarea>
                 </div>
-                <button class="submit-btn">Create Project</button>
+                <button class="submit-btn" id="submit-btn">Create Project</button>
               </form>
             </div>
           </div>

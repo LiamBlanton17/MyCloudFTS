@@ -292,39 +292,7 @@ def create_project(request):
         })
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
-    
-# Delete a file from a project
-@login_required(login_url='/login.html')
-def delete_file(request):
-    if request.method != "POST":
-        return JsonResponse({'message': 'Invalid request method'}, status=405)
-    
-    try: 
-        data = json.loads(request.body)
 
-        file_id = data.get('file_id', None) # Get file_id from request
-        action = data.get('action', None) # Get action from request (delete)
-
-        if not file_id or not action:
-            return JsonResponse({'message': 'Invalid requets data!'}, status = 400)
-        
-        if action != 'delete':
-            return JsonResponse({'message': 'Invalid action!'}, status = 400)
-        
-        try: 
-            file_id = int(file_id)
-        except ValueError:
-            return JsonResponse({'message': 'Invalid file ID!'}, status=400)
-        
-        file = File.objects.filter(file_id=file_id).first()
-
-        if not file:
-            return JsonResponse({'message': 'File does not exist!'}, status=404)
-        file.delete() # Delete the file from the database
-        return JsonResponse({'message': f'File {file_id} deleted successfully!'})
-    
-    except Exception as e:
-        return JsonResponse({'message': f'Error! {str(e)}'})
 
 # Delete a project and all its files and folders
 @login_required(login_url='/login.html')
@@ -379,19 +347,21 @@ def download_project(request):
 @login_required(login_url='/login.html')
 def invite_to_project(request):
     try:
-        project_id = request.GET.get('project_id')
-        invite_email = request.GET.get('invite_email')
-
+        data = json.loads(request.body)
+        project_id = data.get('project_id')
+        email = data.get('email')
+        
         if not project_id:
             raise ValueError('No project ID provided.')
         
-        if not invite_email:
+        if not email:
             raise ValueError('No email to invite to was provided.')
-        
+
         # Verify the email is a valid user
-        invited_user = User.objects.filter(email=invite_email)
+        invited_user = User.objects.filter(email=email)
         if not invited_user.exists():
             raise ValueError('Email provided was not a valid user.')
+        
         
         # Verify the project is a valid project owned by the user trying to share it
         project = Project.objects.filter(project_id=project_id, user=request.user)
@@ -407,10 +377,9 @@ def invite_to_project(request):
         key = secrets.token_hex(32)
         InviteKeys.objects.create(
             key = key,
-            user = invited_user,
+            user = invited_user.first(),
             project = project,
         ).save()
-
 
         # Create a new model that will verify that this url is valid
         link = f'/api/post/join_project/?key={key}'
@@ -420,12 +389,15 @@ def invite_to_project(request):
             "MyCloudFTS: Project Invite!", 
             f"You have been invited to {project.name}! Click the link to join: {invite_link}",
             "no-reply@MyCloudFTS.com", 
-            [invite_email],
+            [email],
             html_message=f"You have been invited to <b>{project.name}</b>! Click <a href='{invite_link}'>here</a> to join!"
         )
+        print(email)
+        print(invite_link)
 
         return JsonResponse({'message': f'Successfully sent project invite!'}, status=200)
     except Exception as e:
+        print(f'Error! {str(e)}')
         return JsonResponse({'message': f'Error! {str(e)}'}, status=400)
     
 
@@ -443,6 +415,7 @@ def join_project(request):
 
         # Verify the input is within a day old - right now just invalidate after 24 hours
         if timezone.now() > invite.date_created + timedelta(hours=24):
+            InviteKeys.objects.filter(key = key).delete()
             raise ValueError('Key has expired (more than 24 hours since the invite was sent)!')
 
         # Verify the project is a valid project
@@ -453,7 +426,8 @@ def join_project(request):
             raise ValueError('Project or user did not exist.')
         
         # Add the user to the project
-        invited_project.members.add(invited_user)
+        invited_project.user.add(invited_user)
+        InviteKeys.objects.filter(key = key).delete()
 
         return JsonResponse({'message': f'Successfully joined the project!'}, status=200)
     except Exception as e:
