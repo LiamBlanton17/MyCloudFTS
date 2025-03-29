@@ -179,6 +179,39 @@ def api_logout(request):
     logout(request)
     return JsonResponse({'status': 'success'})
 
+@login_required(login_url='/login.html')
+def update_personal_info(request):
+    if request.method != "POST":
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        email = data.get('email')
+
+        if not all([first_name, last_name, email]):
+            return JsonResponse({'message': 'All fields are required!'}, status=400)
+
+        # Check if email is already in use by someone else
+        if request.user.email != email and User.objects.filter(email=email).exists():
+            return JsonResponse({'message': 'Email already in use!'}, status=409)
+
+        # Update user info
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
+
+        return JsonResponse({
+            'message': 'Your information has been updated successfully!',
+            'status': 'success'
+        })
+
+    except Exception as e:
+        return JsonResponse({'message': f'Error! {str(e)}'}, status=500)
+
 
 # THIS DOES NOT WORK! Buggy front end, and backend doesn't work right
 # The root folder path needs to be changed too. It will save files in the users directory
