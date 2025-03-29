@@ -328,6 +328,38 @@ def delete_project(request):
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
 
+# Delete a file from a project
+@login_required(login_url='/login.html')
+def delete_file(request):
+    if request.method != "POST":
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
+    
+    try: 
+        data = json.loads(request.body)
+
+        file_id = data.get('file_id', None) # Get file_id from request
+        action = data.get('action', None) # Get action from request (delete)
+
+        if not file_id or not action:
+            return JsonResponse({'message': 'Invalid requets data!'}, status = 400)
+        
+        if action != 'delete':
+            return JsonResponse({'message': 'Invalid action!'}, status = 400)
+        
+        try: 
+            file_id = int(file_id)
+        except ValueError:
+            return JsonResponse({'message': 'Invalid file ID!'}, status=400)
+        
+        file = File.objects.filter(file_id=file_id).first()
+
+        if not file:
+            return JsonResponse({'message': 'File does not exist!'}, status=404)
+        file.delete() # Delete the file from the database
+        return JsonResponse({'message': f'File {file_id} deleted successfully!'})
+    
+    except Exception as e:
+        return JsonResponse({'message': f'Error! {str(e)}'})
 
 # View to download a file 
 @login_required(login_url='/login.html')
