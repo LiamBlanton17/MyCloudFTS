@@ -23,11 +23,12 @@ urlpatterns = [
     path('api/post/sign_up/', views.api_sign_up, name='signup'),
     path('api/post/logout/', views.api_logout, name='logout'),
     path('api/post/login/', views.api_login, name='login_api'),
-    path('api/post/create_project/', views.create_project, name='createproject'),
+    path('api/post/update_personal_info/', views.update_personal_info, name='update_personal_info'),
 
     path('api/post/upload_file/', views.upload_file, name='uploadfile'),
     path('api/post/download_file/', views.download_file, name='downloadfile'),
     path('api/post/delete_file/', views.delete_file, name='deletefile'),
+    path('api/post/create_project/', views.create_project, name='createproject'),
     path('api/post/delete_project/', views.delete_project, name='deleteproject'),
     
     path('api/post/rename_project', views.rename_project, name='renameproject'),

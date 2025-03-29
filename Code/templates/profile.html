@@ -71,7 +71,7 @@
               <div class="default-avatar">{{ user.username.0|upper }}</div>
             </div>
             <div class="profile-info">
-              <h1>{{ user.username }}</h1>
+              <h1>{{ user.first_name }} {{ user.last_name }}</h1>
               <p class="bio">
                 Member since {{ user.date_joined|date:"F j, Y" }}
               </p>

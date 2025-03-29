@@ -246,6 +246,44 @@
         }
       });
 
+      // Handle update personal information form submission
+      document.getElementById("personalInfoForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        const first_name = document.getElementById("firstName").value;
+        const last_name = document.getElementById("lastName").value;
+        const email = document.getElementById("email").value;
+
+        fetch("/api/post/update_personal_info/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"), // Include CSRF token
+          },
+          body: JSON.stringify({
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+          }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Failed to update personal information.");
+            }
+          })
+          .then((data) => {
+            alert(data.message); // Show success message
+            personalInfoModal.style.display = "none"; // Close the modal
+            location.reload(); // Reload the page to reflect changes
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred while updating your information.");
+          });
+      });
+
       // Handle logout
       document.querySelector(".logout").addEventListener("click", function (e) {
         e.preventDefault();
