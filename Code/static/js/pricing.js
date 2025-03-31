@@ -74,6 +74,45 @@ function setupPricingPage() {
         });
     });
 }
+
+// retrieving local storage from signup.js
+function getUserBin() {
+    const firstname = localStorage.getItem("firstname");
+    const email = localStorage.getItem("email");
+    return {
+        firstname: firstname, email: email
+    };
+}
+
+
+
+function send_mail(){        
+    const userData = getUserBin();
+    const selectedPlan = $("input[name='uo']:checked").val();
+    let plan_name = "";
+    if (selectedPlan === "0") {
+        plan_name = "Silver";
+    } else if (selectedPlan === "1") {
+        plan_name = "Gold";
+    } else if (selectedPlan === "2") {
+        plan_name = "Platinum";
+    }
+    fetch('/api/post/send_mail/', { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: userData.email,
+            firstname: userData.firstname,
+            plan_name: plan_name
+        })
+    })
+    .then(response => response.json())
+    .then(data => {alert(data.message || data.error);})
+    .catch(error => console.error('error: ', error));
+};
+
 // export functions to be used in testing
 module.exports = {
     validatePlan,

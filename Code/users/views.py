@@ -534,9 +534,10 @@ def confirmation_mail(request):
         try:
             data = json.loads(request.body)
             userEmail = data.get('email')
-            # message to include pricing selection
+            userName = data.get('firstname')
+            userPlanName = data.get('plan_name')
             subject = 'MyCloudFTS Confirmation'
-            message = 'Thank you for choosing MyCloudFTS, your account and subscription model has been confirmed!'
+            message = f"Hello {userName}!,\n\nThank you for choosing MyCloudFTS! You have subscribed to our {userPlanName} tier. We hope you enjoy our service!"
             confirm_send_mail(subject, message, 'mycloudfts@gmail.com', [userEmail])
             return JsonResponse({'message': 'email was sent!'})
         except Exception as e:
