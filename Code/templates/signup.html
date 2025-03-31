@@ -61,7 +61,7 @@
         <input type="checkbox" id="terms" name="terms" required> 
         <label class="terms" for="terms">I accept the terms and privacy policy</label><br>
         <a href="pricing.html">
-            <button onclick="send_mail()" class="signup-btn" type="submit" id="signup-submit">Sign up</button>
+            <button onclick="userBin($('#firstname').val(), $('#email').val())" class="signup-btn" type="submit" id="signup-submit">Sign up</button>
         </a>
         <p class="signin">Already have an account?
             <a class="signin-link" href="login.html">Sign in</a>

@@ -43,7 +43,7 @@ function validateForm(){
 }
 $(function(){
     $('#signup-submit').on("click", function(){
-        if(!validateForm()){
+        if (!validateForm()) {
             return;
         }
         const data = {
@@ -64,7 +64,7 @@ $(function(){
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                    console.log('Redirecting to dashboard...');
+                    userBin($("#firstname").val(), $("#email").val());    
                     window.location.href = response.redirect;
                 } else {
                     console.log('Login failed:', response.message);
@@ -76,21 +76,12 @@ $(function(){
             }
         });
     });
-});
+});  
 
-function send_mail(){
-    const email = document.getElementById('email').value;
-    fetch('api/post/send_mail/', 
-        { method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({email: email})
-        }
-    )
-    .then(response => response.json())
-    .then(data => {alert(data.message || data.error);})
-    .catch(error => console.error('error: ', error));
+// locally storing user data for pricing.js
+function userBin(firstname, email){
+    localStorage.setItem('firstname', firstname);
+    localStorage.setItem('email', email);
 };
 
 module.exports = {

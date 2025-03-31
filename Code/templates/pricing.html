@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/pricing.css' %}">
     <!-- JS code and JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/pricing.js' %}"></script>
     <title>Pricing</title>
 </head>
 <body>
@@ -47,7 +48,7 @@
             </label>
         </div>
         <a class="continue" href="./confirmation.html">
-        <button class="continue-btn">Continue</button> 
+            <button onclick="send_mail()" class="continue-btn">Continue</button> 
         </a>
     </main>
 </body>
