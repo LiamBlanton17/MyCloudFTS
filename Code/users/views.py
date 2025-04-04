@@ -219,6 +219,7 @@ def update_personal_info(request):
 def upload_file(request):
     if not request.user.is_authenticated:
         return redirect('login')
+    
     if request.method != "POST":
         return JsonResponse({'message': 'Invalid request method'},  status=405)
 
@@ -229,41 +230,74 @@ def upload_file(request):
         if project_id == -1:  # Must have a project id
             return redirect('dashboard')
 
-        uploaded_file = request.FILES['file']
-        if not uploaded_file:
-            return JsonResponse({'message': 'No file provided!'})
-
-        file_name = uploaded_file.name
-        file_size = uploaded_file.size
-        file_type = uploaded_file.content_type
-
-        folder = None
-        if folder_id == -1:  # Get root folder
-            folder = Folder.objects.filter(project_id=project_id, is_root=True).first()
-        else:  # Get this folder
-            folder = Folder.objects.filter(folder_id=folder_id).first()
-
+        # Save folder to variable
+        folder = Folder.objects.filter(project_id=project_id, is_root=True).first() if folder_id == -1 \
+            else Folder.objects.filter(folder_id=folder_id).first()
+        
         if folder is None:
-            return JsonResponse({'message': 'Invalid folder!'})
+            return JsonResponse({'message': 'Invalid folder!'}, status=400)
+
+        # uploaded_file = request.FILES['file']
+        uploaded_files = request.FILES.getlist('files[]')
+        if not uploaded_files:
+            return JsonResponse({'message': 'No files uploaded!'})
+        
+        os.makedirs(folder.path, exist_ok=True)
+
+        for uploaded_file in uploaded_files:
+            file_name = uploaded_file.name
+            file_path = os.path.join(folder.path, file_name)
+
+            # Save to disk
+            with open(file_path, "wb") as f:
+                for chunk in uploaded_file.chunks():
+                    f.write(chunk)
+
+            # Save to DB
+            File.objects.create(
+                name=file_name,
+                path=file_path,
+                size=uploaded_file.size,
+                file_type=uploaded_file.content_type,
+                folder_id=folder
+            )
+
+            print(f"Uploaded: {file_name} → {file_path}")
+
+        return JsonResponse({'message': 'Upload successful!'})
+
+        # file_name = uploaded_file.name
+        # file_size = uploaded_file.size
+        # file_type = uploaded_file.content_type
+
+        # folder = None
+        
+        # if folder_id == -1:  # Get root folder
+        #     folder = Folder.objects.filter(project_id=project_id, is_root=True).first()
+        # else:  # Get this folder
+        #     folder = Folder.objects.filter(folder_id=folder_id).first()
+
+        # if folder is None:
+        #     return JsonResponse({'message': 'Invalid folder!'})
 
         # Add file entry to database
-        file = File(
-            name=file_name,
-            path=f"{folder.path}{file_name}",
-            size=file_size,
-            file_type=file_type,
-            folder_id=folder
-        )
-        file.save()
-        print(f"Uploaded: {file} to {folder.path}")
+        # file = File(
+        #     name=file_name,
+        #     path=f"{folder.path}{file_name}",
+        #     size=file_size,
+        #     file_type=file_type,
+        #     folder_id=folder
+        # )
+        # file.save()
+        # print(f"Uploaded: {file} to {folder.path}")
 
-        # Actually upload the file
-        save_path = f"{folder.path}{file_name}"  # Folder path has a trailing /
-        with open(save_path, "wb") as file:
-            for chunk in uploaded_file.chunks():  # Read and write in chunks to handle large files
-                file.write(chunk)
+        # # Actually upload the file
+        # save_path = f"{folder.path}{file_name}"  # Folder path has a trailing /
+        # with open(save_path, "wb") as file:
+        #     for chunk in uploaded_file.chunks():  # Read and write in chunks to handle large files
+        #         file.write(chunk)
     
-        return JsonResponse({'message': f'Successfully uploaded file!'})
+        # return JsonResponse({'message': f'Successfully uploaded file!'})
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
 

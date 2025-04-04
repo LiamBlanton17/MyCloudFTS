@@ -27,7 +27,7 @@ $(() => {
         let file = this.files[0];
         if (!file) return;
         let formData = new FormData();
-        formData.append('file', file);
+        formData.append('files[]', file);
         const urlParams = new URLSearchParams(window.location.search);
         const project_id = urlParams.get('project_id') || -1;
         const folder_id = urlParams.get('folder_id') || -1;
@@ -86,13 +86,16 @@ $(() => {
     // Handle file deletion
     $(document).on('click', '.file-delete', function(e) {
         e.preventDefault();
+        
         const file_id = $(this).data('file-id');
         if(!file_id){
             console.log('File ID not found');
             return;
         }
         
-        if (confirm('Are you sure you want to delete this file?')) {
+        const fileCard = $(this).closest('.file-card');
+        const fileName = $(this).closest('.file-card').find('.file-name').text();
+        if (confirm(`Are you sure you want to delete "${fileName}"?`)) {
             // Your delete file AJAX call here
             $.ajax({
                 url: `/api/post/delete_file/`,
@@ -108,7 +111,27 @@ $(() => {
                 dataType: 'json',
                 success: function(response) {
                     console.log('Success:', response);
-                    location.reload();  // Reload the page after deletion
+                    //location.reload();  // Reload the page after deletion
+                    // Fade out and remove the card
+                    fileCard.fadeOut(300, function() {
+                        $(this).remove();
+
+                        // Check if any files remain
+                        if ($('.file-card').length === 0) {
+                            $('.file-grid').append(`
+                                <div class="no-files-message">
+                                    <i class="fas fa-folder-open"></i>
+                                    <p>No files uploaded yet</p>
+                                    <p class="upload-hint">Upload your first file to get started</p>
+                                </div>
+                            `);
+                        }
+                        
+                        // Delay alert slightly so rendering isn't blocked
+                        setTimeout(() => {
+                            alert(`"${fileName}" was successfully deleted.`);
+                        }, 50); // Delay slightly to allow DOM to update
+                    });
                 },
                 error: function(xhr, status, error) {
                     console.log('Error:', error);
@@ -183,7 +206,7 @@ $(document).ready(function() {
         // Add CSRF token
         formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
 
-        // Upload files
+        // Upload files - 1 [There are two of these for some reason]
         $.ajax({
             url: '/api/post/upload_files/',
             type: 'POST',
@@ -222,43 +245,49 @@ $(document).ready(function() {
     // Handle file actions
     function initializeFileActions() {
         // Delete file
-        $(document).on('click', '.file-delete', function(e) {
-            e.preventDefault();
-            const fileId = $(this).data('file-id');
-            const fileName = $(this).closest('.file-card').find('.file-name').text();
+        // $(document).on('click', '.file-delete', function(e) {
+        //     e.preventDefault();
+        //     const fileId = $(this).data('file-id');
+        //     if (!fileId) {
+        //         console.log('File ID not found');
+        //         return;
+        //     }
             
-            if (confirm(`Are you sure you want to delete "${fileName}"?`)) {
-                $.ajax({
-                    url: '/api/post/delete_file/',
-                    type: 'POST',
-                    data: JSON.stringify({
-                        file_id: fileId
-                    }),
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    contentType: 'application/json',
-                    success: function(response) {
-                        $(`[data-file-id="${fileId}"]`).closest('.file-card').fadeOut(300, function() {
-                            $(this).remove();
-                            // Show no files message if no files left
-                            if ($('.file-card').length === 0) {
-                                $('.file-grid').append(`
-                                    <div class="no-files-message">
-                                        <i class="fas fa-folder-open"></i>
-                                        <p>No files uploaded yet</p>
-                                        <p class="upload-hint">Upload your first file to get started</p>
-                                    </div>
-                                `);
-                            }
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Failed to delete file. Please try again.');
-                    }
-                });
-            }
-        });
+        //     const fileName = $(this).closest('.file-card').find('.file-name').text();
+            
+        //     if (confirm(`Are you sure you want to delete "${fileName}"?`)) {
+        //         $.ajax({
+        //             url: '/api/post/delete_file/',
+        //             type: 'POST',
+        //             data: JSON.stringify({
+        //                 file_id: fileId
+        //             }),
+        //             headers: {
+        //                 'X-CSRFToken': getCookie('csrftoken')
+        //             },
+        //             contentType: 'application/json',
+        //             dataType: 'json',
+        //             success: function(response) {
+        //                 $(`[data-file-id="${fileId}"]`).closest('.file-card').fadeOut(300, function() {
+        //                     $(this).remove();
+        //                     // Show no files message if no files left
+        //                     if ($('.file-card').length === 0) {
+        //                         $('.file-grid').append(`
+        //                             <div class="no-files-message">
+        //                                 <i class="fas fa-folder-open"></i>
+        //                                 <p>No files uploaded yet</p>
+        //                                 <p class="upload-hint">Upload your first file to get started</p>
+        //                             </div>
+        //                         `);
+        //                     }
+        //                 });
+        //             },
+        //             error: function(xhr, status, error) {
+        //                 alert('Failed to delete file. Please try again.');
+        //             }
+        //         });
+        //     }
+        // });
 
         // Rename file
         $(document).on('click', '.rename-btn', function(e) {
@@ -351,16 +380,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressBar = document.querySelector('.upload-progress-bar');
     const uploadStatus = document.querySelector('.upload-status');
 
-    // Open modal when clicking upload button
+    // Open modal when clicking upload button and show drag-and-drop area
     uploadBtn.addEventListener('click', function() {
         uploadModal.style.display = 'block';
         document.body.style.overflow = 'hidden'; // Prevent scrolling
+        //Test
+        dropZone.style.display = 'block'; // Show the drag-and-drop field
+        fileInput.style.display = 'none'; // Hide the file input field
     });
 
     // Close modal when clicking X
     closeBtn.addEventListener('click', function() {
         uploadModal.style.display = 'none';
         document.body.style.overflow = '';
+        //Test
+        dropZone.style.display = 'none'; // Hide the drag-and-drop field
     });
 
     // Close modal when clicking outside
@@ -368,6 +402,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target === uploadModal) {
             uploadModal.style.display = 'none';
             document.body.style.overflow = '';
+            //Test
+            dropZone.style.display = 'none'; // Hide the drag-and-drop field
         }
     });
 
@@ -391,15 +427,24 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const files = e.dataTransfer.files;
         handleFiles(files);
+        // Debug Test
+        console.log("Dropped files:", files);
     });
 
-    // Handle click to upload
+    // Handle click inside the drag-and-drop field to open file input dialog
     dropZone.addEventListener('click', function() {
+        //Test
+        dropZone.style.display = 'none'; // Hide the drag-and-drop field
         fileInput.click();
+        //Test
+        //fileInput.style.display = 'none'; // Temporarily show the file input
     });
 
+    // Handle file selection
     fileInput.addEventListener('change', function() {
         handleFiles(this.files);
+        //Test
+        fileInput.style.display = 'none'; // Hide the file input after selection
     });
 
     // Handle file upload
@@ -422,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const project_id = urlParams.get('project_id') || -1;
 
-        // Upload files
+        // Upload files - 2
         $.ajax({
             url: `/api/post/upload_file/?project_id=${project_id}`,
             type: 'POST',
@@ -464,3 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+
