@@ -25,6 +25,7 @@ body {
 }
 
 h1 {
+    padding-top: 1.5rem;
     font-size: 2rem;
     color: #333;
     grid-area: header;
@@ -217,6 +218,7 @@ p {
     }
 
     h1 {
+        padding-top: 0rem;
         font-size: 1.5rem;
     }
 
@@ -235,6 +237,10 @@ p {
     label {
         padding: 0.4rem 0.7rem;
         font-size: smaller;
+    }
+
+    .nav > a {
+        margin-left: 1rem;
     }
 
 }
