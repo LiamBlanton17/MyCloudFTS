@@ -78,7 +78,7 @@
             <button class="new-file-btn" id="uploadFilesBtn">
               <i class="fas fa-cloud-upload-alt"></i> Upload Files
             </button>
-            <input type="file" id="new-file-upload-input" multiple />
+            <!-- <input type="file" id="new-file-upload-input" multiple /> -->
           </div>
 
           <!-- File Upload Modal -->
@@ -96,6 +96,9 @@
                   <div class="upload-progress-bar" style="width: 0%"></div>
                 </div>
                 <p class="upload-status"></p>
+
+                <!-- HIDDEN - Move file input inside modal -->
+                <input type="file" id="new-file-upload-input" multiple /> 
               </div>
             </div>
           </div>
