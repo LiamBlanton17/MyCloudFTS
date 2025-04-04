@@ -7,8 +7,10 @@
     <title>User Project Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
     <link rel="stylesheet" href="{% static 'css/userproject.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/avatar.css' %}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/userproject.js' %}"></script>
+    <script src="{% static 'js/avatar.js' %}"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -66,9 +68,31 @@
             <i class="fas fa-search"></i>
           </div>
           <div class="user-info">
+            <div
+              class="avatar avatar-md"
+              style="background-color: {{ user.get_avatar_color }};"
+            >
+              {{ user.get_initials }}
+            </div>
             <span class="user-name">Welcome, {{ user.first_name }}</span>
           </div>
         </header>
+
+        <!-- Team members section -->
+        <div class="team-members">
+          <h3>Team Members</h3>
+          <div class="avatar-group">
+            {% for member in team_members %}
+            <div
+              class="avatar avatar-sm"
+              style="background-color: {{ member.get_avatar_color }}"
+              title="{{ member.username }}"
+            >
+              {{ member.get_initials }}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
 
         <!-- Dashboard Content -->
         <div class="dashboard-content">
@@ -98,7 +122,7 @@
                 <p class="upload-status"></p>
 
                 <!-- HIDDEN - Move file input inside modal -->
-                <input type="file" id="new-file-upload-input" multiple /> 
+                <input type="file" id="new-file-upload-input" multiple />
               </div>
             </div>
           </div>
@@ -293,18 +317,15 @@
           year: "numeric",
         });
 
-        //i need this to push again so lets see 
-        //i need this to push again so lets see 
-        //i need this to push again so lets see 
-        //i need this to push again so lets see 
-        //i need this to push again so lets see 
-        //i need this to push again so lets see 
-        //i need this to push again so lets see 
-        //i need this to push again so lets see 
-        //i need this to push again so lets see   
-        
-
-
+        //i need this to push again so lets see
+        //i need this to push again so lets see
+        //i need this to push again so lets see
+        //i need this to push again so lets see
+        //i need this to push again so lets see
+        //i need this to push again so lets see
+        //i need this to push again so lets see
+        //i need this to push again so lets see
+        //i need this to push again so lets see
 
         dateElements.forEach((element) => {
           element.textContent = formattedDate;

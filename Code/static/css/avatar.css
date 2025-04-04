@@ -1,0 +1,84 @@
+/* Avatar Component Styles */
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  border: 2px solid white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  /* Ensure perfect circle */
+  position: relative;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+}
+
+.avatar-sm {
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+}
+
+.avatar-md {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+.avatar-lg {
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
+}
+
+/* Colors */
+.avatar-blue {
+  background-color: hsl(210, 100%, 56%);
+}
+.avatar-pink {
+  background-color: hsl(340, 82%, 52%);
+}
+.avatar-green {
+  background-color: hsl(160, 84%, 39%);
+}
+.avatar-purple {
+  background-color: hsl(276, 91%, 38%);
+}
+.avatar-orange {
+  background-color: hsl(16, 94%, 54%);
+}
+.avatar-teal {
+  background-color: hsl(188, 78%, 41%);
+}
+
+/* Avatar in groups */
+.avatar-group {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-group .avatar {
+  margin-right: -10px;
+  border: 2px solid white;
+  position: relative;
+}
+
+.avatar-group .avatar:hover {
+  z-index: 10;
+  transform: scale(1.1);
+  margin-right: -5px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Avatar in user info section */
+.user-info .avatar {
+  margin-right: 10px;
+}

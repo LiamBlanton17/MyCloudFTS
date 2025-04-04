@@ -15,6 +15,7 @@
     <!-- Load CSS -->
     <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
     <link rel="stylesheet" href="{% static 'css/settings.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/avatar.css' %}" />
     <!-- Load FontAwesome -->
     <link
       rel="stylesheet"
@@ -23,6 +24,8 @@
     <!-- Load jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/userdash.js' %}"></script>
+    <script src="{% static 'js/settings.js' %}"></script>
+    <script src="{% static 'js/avatar.js' %}"></script>
   </head>
   <body>
     <div class="dashboard-container">
@@ -83,6 +86,73 @@
           </div>
 
           <div class="settings-container">
+            <!-- User avatar section in settings -->
+            <div class="settings-section" id="profile-image">
+              <h3>Profile Picture</h3>
+              <div class="settings-content">
+                <div class="avatar-preview">
+                  <div
+                    class="avatar avatar-lg"
+                    style="background-color: {{ user.get_avatar_color }}; width: 100px; height: 100px; font-size: 40px;"
+                  >
+                    {{ user.get_initials }}
+                  </div>
+                </div>
+                <div class="avatar-actions">
+                  <p class="settings-help">
+                    This avatar is automatically generated based on your name.
+                  </p>
+                  <div class="color-picker">
+                    <p class="color-picker-label">Choose your avatar color:</p>
+                    <div class="color-options">
+                      <button
+                        class="color-option avatar-blue"
+                        data-color="hsl(210, 100%, 56%)"
+                        title="Blue"
+                      ></button>
+                      <button
+                        class="color-option avatar-pink"
+                        data-color="hsl(340, 82%, 52%)"
+                        title="Pink"
+                      ></button>
+                      <button
+                        class="color-option avatar-green"
+                        data-color="hsl(160, 84%, 39%)"
+                        title="Green"
+                      ></button>
+                      <button
+                        class="color-option avatar-purple"
+                        data-color="hsl(276, 91%, 38%)"
+                        title="Purple"
+                      ></button>
+                      <button
+                        class="color-option avatar-orange"
+                        data-color="hsl(16, 94%, 54%)"
+                        title="Orange"
+                      ></button>
+                      <button
+                        class="color-option avatar-teal"
+                        data-color="hsl(188, 78%, 41%)"
+                        title="Teal"
+                      ></button>
+                    </div>
+                    <div class="custom-color-picker">
+                      <label for="custom-color">Or pick any color:</label>
+                      <input type="color" id="custom-color" value="#3b82f6" />
+                      <button
+                        class="color-option custom-color-preview"
+                        id="custom-color-preview"
+                        data-color="#3b82f6"
+                      ></button>
+                    </div>
+                    <button id="save-avatar-color" class="settings-btn">
+                      Save Color
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Account Settings Section -->
             <div class="settings-section">
               <h3>Account Settings</h3>
@@ -247,42 +317,44 @@
       });
 
       // Handle update personal information form submission
-      document.getElementById("personalInfoForm").addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent the default form submission
+      document
+        .getElementById("personalInfoForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault(); // Prevent the default form submission
 
-        const first_name = document.getElementById("firstName").value;
-        const last_name = document.getElementById("lastName").value;
-        const email = document.getElementById("email").value;
+          const first_name = document.getElementById("firstName").value;
+          const last_name = document.getElementById("lastName").value;
+          const email = document.getElementById("email").value;
 
-        fetch("/api/post/update_personal_info/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCookie("csrftoken"), // Include CSRF token
-          },
-          body: JSON.stringify({
-            first_name: first_name,
-            last_name: last_name,
-            email: email,
-          }),
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error("Failed to update personal information.");
-            }
+          fetch("/api/post/update_personal_info/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"), // Include CSRF token
+            },
+            body: JSON.stringify({
+              first_name: first_name,
+              last_name: last_name,
+              email: email,
+            }),
           })
-          .then((data) => {
-            alert(data.message); // Show success message
-            personalInfoModal.style.display = "none"; // Close the modal
-            location.reload(); // Reload the page to reflect changes
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            alert("An error occurred while updating your information.");
-          });
-      });
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+              } else {
+                throw new Error("Failed to update personal information.");
+              }
+            })
+            .then((data) => {
+              alert(data.message); // Show success message
+              personalInfoModal.style.display = "none"; // Close the modal
+              location.reload(); // Reload the page to reflect changes
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("An error occurred while updating your information.");
+            });
+        });
 
       // Handle logout
       document.querySelector(".logout").addEventListener("click", function (e) {

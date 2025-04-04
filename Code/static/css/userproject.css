@@ -588,3 +588,24 @@
   color: #1a202c;
   font-size: 14px;
 }
+
+/* Team members section */
+.team-members {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.team-members h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1e293b;
+}
+
+.team-members .avatar-group {
+  display: flex;
+  flex-wrap: wrap;
+}

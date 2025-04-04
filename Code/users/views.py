@@ -577,3 +577,27 @@ def confirmation_mail(request):
         except Exception as e:
             return JsonResponse({'message': 'email was not sent!'})
             
+
+@login_required(login_url='/login.html')
+def update_avatar_color(request):
+    if request.method != "POST":
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        avatar_color = data.get('avatar_color')
+
+        if not avatar_color:
+            return JsonResponse({'message': 'Avatar color is required!'}, status=400)
+
+        # Update user's avatar color preference using the new method
+        user = request.user
+        user.set_avatar_color(avatar_color)
+
+        return JsonResponse({
+            'message': 'Avatar color updated successfully!',
+            'status': 'success'
+        })
+
+    except Exception as e:
+        return JsonResponse({'message': f'Error! {str(e)}'}, status=500)
