@@ -7,10 +7,14 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
     <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/avatar.css' %}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/profile.js' %}"></script>
+    <script src="{% static 'js/avatar.js' %}"></script>
   </head>
   <body>
     <div class="dashboard-container">
@@ -67,12 +71,17 @@
         <!-- Profile Content -->
         <div class="profile-container">
           <div class="profile-header">
-            <div class="profile-avatar">
-              <div class="default-avatar">{{ user.username.0|upper }}</div>
+            <div class="profile-avatar-container">
+              <div
+                class="avatar avatar-lg"
+                style="background-color: {{ user.get_avatar_color }}; width: 120px; height: 120px; font-size: 48px;"
+              >
+                {{ user.get_initials }}
+              </div>
             </div>
             <div class="profile-info">
               <h1>{{ user.first_name }} {{ user.last_name }}</h1>
-              <p class="bio">
+              <p class="profile-subtitle">
                 Member since {{ user.date_joined|date:"F j, Y" }}
               </p>
               <div class="profile-stats">
@@ -87,7 +96,9 @@
                   <span class="stat-label">Joined</span>
                 </div>
               </div>
-              <a href="#" class="edit-profile-btn">Edit Profile</a>
+            </div>
+            <div class="profile-actions">
+              <button class="edit-profile-btn">Edit Profile</button>
             </div>
           </div>
 
@@ -237,7 +248,6 @@
       </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const tabButtons = document.querySelectorAll(".tab-btn");

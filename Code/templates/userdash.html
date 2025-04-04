@@ -14,6 +14,7 @@
     />
     <!-- Load CSS -->
     <link rel="stylesheet" href="{% static 'css/userdash.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/avatar.css' %}" />
     <!-- Load FontAwesome -->
     <link
       rel="stylesheet"
@@ -22,6 +23,7 @@
     <!-- Load jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/userdash.js' %}"></script>
+    <script src="{% static 'js/avatar.js' %}"></script>
   </head>
   <body>
     <div class="dashboard-container">
@@ -71,6 +73,12 @@
             <i class="fas fa-search"></i>
           </div>
           <div class="user-info">
+            <div
+              class="avatar avatar-md"
+              style="background-color: {{ user.get_avatar_color }}"
+            >
+              {{ user.get_initials }}
+            </div>
             <span class="user-name">Welcome, {{ user.first_name }}</span>
           </div>
         </header>
@@ -98,14 +106,15 @@
               <p class="project-description">{{ project.description }}</p>
               <div class="project-members">
                 <h4>Team Members:</h4>
-                <div class="member-avatars">
+                <div class="avatar-group">
                   {% for user in project.user.all %}
-                  <img
-                    src="{{ user.avatar.url }}"
-                    alt="{{ user.username }}"
+                  <div
+                    class="avatar avatar-sm"
+                    style="background-color: {{ user.get_avatar_color }}"
                     title="{{ user.username }}"
-                  />
-                 <!-- <div>{{ user.username }}</div>-->
+                  >
+                    {{ user.get_initials }}
+                  </div>
                   {% endfor %}
                 </div>
               </div>
@@ -173,7 +182,9 @@
                     rows="4"
                   ></textarea>
                 </div>
-                <button class="submit-btn" id="submit-btn">Create Project</button>
+                <button class="submit-btn" id="submit-btn">
+                  Create Project
+                </button>
               </form>
             </div>
           </div>

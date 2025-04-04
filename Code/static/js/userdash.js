@@ -257,7 +257,10 @@ $(() => {
                             <p class="project-description">${project.description}</p>
                             <div class="project-members">
                                 <h4>Team Members:</h4>
-                                <div class="member-avatars">
+                                <div class="avatar-group">
+                                    <div class="avatar avatar-sm" style="background-color: ${getCurrentUserColor()}" title="${getCurrentUserName()}">
+                                        ${getCurrentUserInitials()}
+                                    </div>
                                 </div>
                             </div>
                             <div class="project-actions">
@@ -302,3 +305,53 @@ $(() => {
         });
     });
 });
+
+// Add helper functions to get current user avatar info
+function getCurrentUserInitials() {
+    // Extract from the welcome message or use a default
+    const userName = document.querySelector('.user-name').innerText.replace('Welcome, ', '');
+    if (userName) {
+        const names = userName.split(' ');
+        if (names.length >= 2) {
+            return (names[0][0] + names[1][0]).toUpperCase();
+        } else if (names.length === 1 && names[0]) {
+            return names[0][0].toUpperCase();
+        }
+    }
+    return 'U'; // Default if we can't extract
+}
+
+function getCurrentUserColor() {
+    // Try to extract from the existing avatar, or generate a random one
+    const existingAvatar = document.querySelector('.avatar');
+    if (existingAvatar) {
+        const style = window.getComputedStyle(existingAvatar);
+        const bgColor = style.backgroundColor || style.background;
+        if (bgColor && bgColor !== 'transparent' && bgColor !== 'rgba(0, 0, 0, 0)') {
+            return bgColor;
+        }
+    }
+    
+    // Generate a color from a predefined attractive palette
+    const colors = [
+        'hsl(210, 100%, 56%)', // Blue
+        'hsl(340, 82%, 52%)',  // Pink
+        'hsl(160, 84%, 39%)',  // Green
+        'hsl(276, 91%, 38%)',  // Purple
+        'hsl(16, 94%, 54%)',   // Orange
+        'hsl(188, 78%, 41%)'   // Teal
+    ];
+    
+    // Use the first letter of the username to select a consistent color
+    const userName = getCurrentUserName();
+    const firstChar = (userName.charAt(0) || 'a').toLowerCase();
+    const charCode = firstChar.charCodeAt(0);
+    const colorIndex = charCode % colors.length;
+    
+    return colors[colorIndex];
+}
+
+function getCurrentUserName() {
+    const userName = document.querySelector('.user-name').innerText.replace('Welcome, ', '');
+    return userName || 'User';
+}
