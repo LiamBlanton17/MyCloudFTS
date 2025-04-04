@@ -21,35 +21,36 @@ $(() => {
         e.preventDefault();
         $('#new-file-upload-input').click();
     });
-    $('#new-file-upload-input').on('change', function(e) {
-        e.preventDefault();
-        console.log("file change");
-        let file = this.files[0];
-        if (!file) return;
-        let formData = new FormData();
-        formData.append('files[]', file);
-        const urlParams = new URLSearchParams(window.location.search);
-        const project_id = urlParams.get('project_id') || -1;
-        const folder_id = urlParams.get('folder_id') || -1;
-        $.ajax({
-            url: `api/post/upload_file/?project_id=${project_id}&folder_id=${folder_id}`,
-            type: 'POST',
-            data: formData,
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                console.log('Success:', response.message);
-                alert(response.message);
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                console.log('Error:', error);
-            }
-        });
-    });
+    // This file upload input is already handeled in code block starting at line 373
+    // $('#new-file-upload-input').on('change', function(e) {
+    //     e.preventDefault();
+    //     console.log("file change");
+    //     let file = this.files[0];
+    //     if (!file) return;
+    //     let formData = new FormData();
+    //     formData.append('files[]', file);
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const project_id = urlParams.get('project_id') || -1;
+    //     const folder_id = urlParams.get('folder_id') || -1;
+    //     $.ajax({
+    //         url: `api/post/upload_file/?project_id=${project_id}&folder_id=${folder_id}`,
+    //         type: 'POST',
+    //         data: formData,
+    //         headers: {
+    //             'X-CSRFToken': getCookie('csrftoken')
+    //         },
+    //         processData: false,
+    //         contentType: false,
+    //         success: function(response) {
+    //             console.log('Success:', response.message);
+    //             alert(response.message);
+    //             location.reload();
+    //         },
+    //         error: function(xhr, status, error) {
+    //             console.log('Error:', error);
+    //         }
+    //     });
+    // });
     
     // Dropdown functionality for userproject.html
     $(document).on('click', '.dropdown-toggle', function(e) {
@@ -449,6 +450,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle file upload
     function handleFiles(files) {
+        // Debug Test
+        console.log("handleFiles() called with:", files);
+
         if (files.length === 0) return;
 
         const formData = new FormData();
