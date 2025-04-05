@@ -18,7 +18,7 @@ h1 {
 .form-box {
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 0.6rem;
+  border-radius: 1rem;
   padding: 1.3rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 25rem;
@@ -27,6 +27,29 @@ h1 {
   left: 50%;
   transform: translate(-50%, 50%);
   bottom: 50%;
+  animation: 1.5s fadeIn;
+}
+
+form input {
+  border-radius: 0.5rem;
+  height: 2rem;
+  border: solid 0.01rem #007bff6b;
+  padding: 1rem;  
+}
+
+form input[type="email"]:user-invalid, form input[type="password"]:user-invalid {
+  outline: none;
+  border-color: hsl(0, 96%, 27%);
+  box-shadow: 0 0 0 4px rgba(198, 8, 8, 0.15);
+}
+
+form input:focus {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.15);
+  outline: none;
+  transition: ease-in-out 0.5s;
 }
 
 form {
@@ -43,20 +66,23 @@ form label {
 }
 
 .signup-btn {
-  background-color: #007bff;
+  background: linear-gradient(45deg, #1a73e8, #34a853);
   color: white;
   padding: 0.6rem;
   height: auto;
   width: 100%;
   border: none;
-  border-radius: 0.1rem;
+  border-radius: 0.5rem;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .signup-btn:hover {
-  background-color: #0056b3;
+  background: linear-gradient(45deg, #1557b0, #2d8745);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .terms {
@@ -92,4 +118,15 @@ form label {
 .nav > a:hover {
   text-decoration: none;
   transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+  0% {
+    transform: translate(-50%, 40%);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, 50%);
+    opacity: 1;
+  }
 }
