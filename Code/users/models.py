@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.mail import send_mail
 import hashlib
-
+import secrets
+from datetime import timedelta
 
 # Create a UserProfile model to store additional user information
 class UserProfile(models.Model):
@@ -60,6 +62,53 @@ class InviteKeys(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
+
+    # validate a key
+    def validateKey(self, key):
+        invite_key = self.objects.filter(key = key).first()
+        if not invite_key:
+            raise ValueError('Invalid key provided.')
+        
+        if timezone.now() > invite_key.date_created + timedelta(hours=24):
+            InviteKeys.objects.filter(key = key).delete()
+            raise ValueError('Key has expired (more than 24 hours since the invite was sent)!')
+                
+
+    # joins the user to the project - only call after validateKey
+    def useKey(self, key):
+        invite_key = self.objects.filter(key = key).first()
+        invite_key.project.user.add(invite_key.user)
+        InviteKeys.objects.filter(key = key).delete()
+
+
+    # create a new key for a user and a project
+    def createKey(self, user, project):
+        key = secrets.token_hex(32)
+        InviteKeys.objects.create(
+            key = key,
+            user = user,
+            project = project,
+        ).save()
+        return key
+    
+
+    # send an email for a key, if the key is valid. Just return if key is invalid
+    def sendEmail(self, request, key):
+        invite_link = request.build_absolute_uri(f'/api/post/join_project/?key={key}')
+        invite_key = self.objects.filter(key=key).first()
+        if not invite_key:
+            print("Invalid key attempting to send email.")
+            return
+        project = invite_key.project.name
+        email = invite_key.user.email
+        send_mail(
+            "MyCloudFTS: Project Invite!", 
+            f"You have been invited to {project}! Click the link to join: {invite_link}.",
+            "no-reply@MyCloudFTS.com", 
+            [email],
+            html_message=f"You have been invited to <b>{project}</b>! Click <a href='{invite_link}'>here</a> to join!"
+        )
+
 
 # Add methods to User model using a proxy pattern
 def get_initials(self):

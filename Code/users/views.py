@@ -11,9 +11,8 @@ from users.functions import get_file_download
 from django.core.mail import send_mail
 from django.core.mail import send_mail as confirm_send_mail
 import os
-import secrets
 from django.utils import timezone
-from datetime import timedelta
+
 
 # get rid of this LOL vvvvv
 from django.views.decorators.csrf import csrf_exempt
@@ -428,6 +427,7 @@ def delete_file(request):
     except Exception as e:
         return JsonResponse({'message': f'Error! {str(e)}'})
 
+
 # View to download a file 
 @login_required(login_url='/login.html')
 def download_file(request):
@@ -457,42 +457,20 @@ def invite_to_project(request):
             raise ValueError('No email to invite to was provided.')
 
         # Verify the email is a valid user
-        invited_user = User.objects.filter(email=email)
-        if not invited_user.exists():
+        invited_user = User.objects.filter(email=email).first()
+        if not invited_user:
             raise ValueError('Email provided was not a valid user.')
         
-        
         # Verify the project is a valid project owned by the user trying to share it
-        project = Project.objects.filter(project_id=project_id, user=request.user)
-        if not project.exists():
+        project = Project.objects.filter(project_id=project_id, user=request.user).first()
+        if not project:
             raise ValueError('Project ID provided is invalid or is not owned by user attempting to share it.')
-        
-        # We now verify we have a project_id and a valid email, send email to user.
-        # Email link will have a key that will add a user to a project when clicked
-        project = project.first()
-        from_email = request.user.email
 
-        # Create a key that will allow the user to join the project
-        key = secrets.token_hex(32)
-        InviteKeys.objects.create(
-            key = key,
-            user = invited_user.first(),
-            project = project,
-        ).save()
+        # Create a key that will allow the user to join the project, and return that key
+        key = InviteKeys.createKey(user=invited_user, project=project)
 
-        # Create a new model that will verify that this url is valid
-        link = f'/api/post/join_project/?key={key}'
-        invite_link = request.build_absolute_uri(link)
-
-        send_mail(
-            "MyCloudFTS: Project Invite!", 
-            f"You have been invited to {project.name}! Click the link to join: {invite_link}",
-            "no-reply@MyCloudFTS.com", 
-            [email],
-            html_message=f"You have been invited to <b>{project.name}</b>! Click <a href='{invite_link}'>here</a> to join!"
-        )
-        print(email)
-        print(invite_link)
+        # Send the email for this key
+        InviteKeys.sendEmail(request=request, key=key)
 
         return JsonResponse({'message': f'Successfully sent project invite!'}, status=200)
     except Exception as e:
@@ -508,25 +486,11 @@ def join_project(request):
         if not key:
             raise ValueError('No key provided.')
         
-        invite = InviteKeys.objects.filter(key = key).first()
-        if not invite:
-            raise ValueError('Invalid key provided.')
-
-        # Verify the input is within a day old - right now just invalidate after 24 hours
-        if timezone.now() > invite.date_created + timedelta(hours=24):
-            InviteKeys.objects.filter(key = key).delete()
-            raise ValueError('Key has expired (more than 24 hours since the invite was sent)!')
-
-        # Verify the project is a valid project
-        invited_user = invite.user
-        invited_project = invite.project
-
-        if not invited_project or not invited_user:
-            raise ValueError('Project or user did not exist.')
+        # Validate a key - raises errors otherwise
+        InviteKeys.validateKey(key=key)
         
-        # Add the user to the project
-        invited_project.user.add(invited_user)
-        InviteKeys.objects.filter(key = key).delete()
+        # Uses the key - joins the user to the project
+        InviteKeys.useKey(key=key)
 
         return JsonResponse({'message': f'Successfully joined the project!'}, status=200)
     except Exception as e:
