@@ -23,8 +23,10 @@ urlpatterns = [
     path('api/post/sign_up/', views.api_sign_up, name='signup'),
     path('api/post/logout/', views.api_logout, name='logout'),
     path('api/post/login/', views.api_login, name='login_api'),
-    path('api/post/update_personal_info/', views.update_personal_info, name='update_personal_info'),
+    path('api/post/login/2fa/', views.validate_2fa, name='login_2fa'),
+    path('api/post/login/toggle_2fa/', views.toggle_2fa, name='toggle_2fa'),
 
+    path('api/post/update_personal_info/', views.update_personal_info, name='update_personal_info'),
     path('api/post/upload_file/', views.upload_file, name='uploadfile'),
     path('api/post/download_file/', views.download_file, name='downloadfile'),
     path('api/post/delete_file/', views.delete_file, name='deletefile'),

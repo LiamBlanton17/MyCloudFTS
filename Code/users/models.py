@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404, render, redirect
+from django.http import HttpResponse, JsonResponse
 import hashlib
 import secrets
 from datetime import timedelta
@@ -109,7 +111,60 @@ class InviteKeys(models.Model):
             html_message=f"You have been invited to <b>{project}</b>! Click <a href='{invite_link}'>here</a> to join!"
         )
 
+class Auth2FA(models.Model):
+    key = models.PositiveIntegerField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
 
+    def create_2fa_key(self, user):
+        # if user has a key, delete it
+        previous_keys = self.objects.filter(user=user).all()
+        if previous_keys:
+            previous_keys.delete()
+        key = secrets.randbelow(900000) + 100000
+        self.objects.create(
+            key=key,
+            user=user
+        )
+        return key
+    
+    def send_2fa_email(self, key):
+        key_2fa = self.objects.filter(key=key).first()
+        if not key_2fa:
+            print("Invalid key attempting to send email.")
+            return
+        email = key_2fa.user.email
+        key = key_2fa.key
+        send_mail(
+            "MyCloudFTS: 2FA Key", 
+            f"Your 2fa key is: {key}",
+            "no-reply@MyCloudFTS.com", 
+            [email],
+            html_message=f"Your 2fa key is: {key}"
+        )
+
+    # Returns true if valid key, false otherwise
+    def use_2fa_key(self, user, key):
+        key_2fa = self.objects.filter(key=key, user=user).first()
+        if not key_2fa:
+            return False
+        key_2fa.delete()
+        return timezone.now() < key_2fa.date_created + timedelta(minutes=15)
+
+class UserSettings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    use_auth2fa = models.BooleanField(default=False)
+
+    def get_or_create(self, user):
+        settings = self.objects.filter(user=user).first()
+        if not settings:
+            settings = self.objects.create(user=user)
+        return settings
+    
+    def toggle_2fa(self):
+        self.use_auth2fa = not self.use_auth2fa
+        self.save()
+        
 # Add methods to User model using a proxy pattern
 def get_initials(self):
     """Return the user's initials (first letter of first and last name)"""
