@@ -26,6 +26,43 @@ function validateForm(){
     }
     return 1;
 }
+function do_2fa_modal(){
+    $('#2fa-modal').show();
+    $('#2fa-modal-submit').on('click', function(e){
+        e.preventDefault();
+        const email = $("#email").val();
+        const password = $("#password").val(); 
+        const key_2fa = $("#2fa-key-input").val();
+        const data = {
+            email: email,
+            password: password,
+            key_2fa: key_2fa,
+        };
+        $.ajax({
+            url: '/api/post/login/2fa/',
+            type: 'POST',
+            data: JSON.stringify(data),
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(response) {
+                console.log('Success:', response);
+                if (response.status === 'success') {
+                    window.location.href = '/dashboard.html';
+                } else {
+                    console.log('Login failed:', response.message);
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('Error:', error);
+                alert('Login failed. Please try again.');
+            }
+        });
+    });
+}
 $(function(){
     $('#login_btn').on('click', function(e){
         e.preventDefault();
@@ -46,7 +83,8 @@ $(function(){
             success: function(response) {
                 console.log('Success:', response);
                 if (response.status === 'success') {
-                    console.log('Redirecting to dashboard...');
+                    do_2fa_modal();
+                } else if(response.status === 'login') {
                     window.location.href = '/dashboard.html';
                 } else {
                     console.log('Login failed:', response.message);

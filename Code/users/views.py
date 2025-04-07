@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db import connection
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from users.models import Project, Folder, File, InviteKeys
+from users.models import Project, Folder, File, InviteKeys, Auth2FA, UserSettings
 import json
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
@@ -150,13 +150,20 @@ def api_login(request):
 
         user = authenticate(username=email, password=password)
 
-        if user is not None:
-            login(request, user)
-            print(f"User {email} successfully logged in")  # Debug log
-            return JsonResponse({
-                'message': f'Welcome back, {user.first_name}!',
+        if user is not None:  
+            # Instead of logging in, create a 2fa code, send an email, and prompt user  
+            settings = UserSettings.get_or_create(self=UserSettings, user=user) 
+            if settings.use_auth2fa:
+                key = Auth2FA.create_2fa_key(self=Auth2FA, user=user)  
+                Auth2FA.send_2fa_email(self=Auth2FA, key=key)
+                return JsonResponse({
+                'message': f'Requesting 2fa key.',
                 'status': 'success',
-                'redirect': '/dashboard.html'  # Adding explicit redirect URL
+            })
+            login(request, user)
+            return JsonResponse({
+                'message': f'Login success',
+                'status': 'login',
             })
         else:
             print(f"Failed login attempt for {email}")  # Debug log
@@ -172,6 +179,61 @@ def api_login(request):
             'status': 'error'
         })
 
+@login_required(login_url='/login.html')
+def toggle_2fa(request):
+    if request.method != "POST":
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
+
+    try:
+        user = request.user
+        
+        # Gets the user settings. Creates if it does not exist yet
+        settings = UserSettings.get_or_create(self=UserSettings, user=user)
+
+        # Toggle the 2FA
+        settings.toggle_2fa()
+
+        return JsonResponse({
+            'message': 'Your information has been updated successfully!',
+            'status': 'success',
+            'auth2fa_status': settings.use_auth2fa
+        })
+
+    except Exception as e:
+        return JsonResponse({'message': f'Error! {str(e)}'}, status=500)
+        
+
+def validate_2fa(request):
+    try:
+        data = json.loads(request.body)
+        email = data.get('email', None)
+        password = data.get('password', None)
+        key = data.get('key_2fa', None)
+        user = authenticate(username=email, password=password)
+
+        if user is not None:  
+            if Auth2FA.use_2fa_key(self=Auth2FA, user=user, key=key):
+                login(request, user)
+                return JsonResponse({
+                    'message': f'2fa key was verified',
+                    'status': 'success',
+                })
+            return JsonResponse({
+                'message': f'Invalid 2fa key! Please try again!',
+                'status': 'error',
+            })
+        else:
+            print(f"Failed login attempt for {email}")  # Debug log
+            return JsonResponse({
+                'message': 'Invalid email or password!',
+                'status': 'error'
+            })
+    except Exception as e:
+        print(f"Login error: {str(e)}")  # Debug log
+        return JsonResponse({
+            'message': f'Error! {str(e)}',
+            'status': 'error'
+        })
 
 @require_POST
 def api_logout(request):
@@ -523,7 +585,9 @@ def rename_project(request):
 
 @login_required(login_url='/login.html')
 def settings(request):
-    return render(request, 'settings.html', {'user': request.user})
+    user = request.user
+    settings = UserSettings.get_or_create(self=UserSettings, user=user)
+    return render(request, 'settings.html', {'user': user, 'auth2fa_status': settings.use_auth2fa})
 
 # view for sending email confirmation to subscribers
 @csrf_exempt
