@@ -1,61 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/Code/static/css/pricing.css" />
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/pricing.css' %}" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Code/static/css/pricing.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    {% load static %} 
+    <link rel="stylesheet" href="{% static 'css/pricing.css' %}">
     <!-- JS code and JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/pricing.js' %}"></script>
     <title>Pricing</title>
-  </head>
-  <body>
+</head>
+<body>
     <nav class="nav">
-      <a href="./landingpage.html">MyCloudFTS</a>
+        <a href="./landingpage.html">MyCloudFTS</a>
     </nav>
-
+    
     <main class="container">
-      <h1>Choose your plan</h1>
-
-      <div class="silver">
-        <h2>Silver</h2>
-        <p>For personal use.</p>
-        <h3>$0*</h3>
-        <p>*Free for 30 days. $10/month after trial period.</p>
-        <label>
-          <input class="check" type="radio" name="uo" id="uo0" value="0" />
-          Get started!
-        </label>
-      </div>
-      <div class="gold">
-        <h2>Gold</h2>
-        <p>
-          Perfect for teams of 2-3 professionals and suited for small-scale
-          projects.
-        </p>
-        <h3>$20/month</h3>
-        <label>
-          <input class="check" type="radio" name="uo" id="uo1" value="1" />
-          Get started!
-        </label>
-      </div>
-      <div class="platinum">
-        <h2>Platinum</h2>
-        <p>
-          Optimal for business and large-scale projects that requires high
-          volume file transfers.
-        </p>
-        <h3>$50/month</h3>
-        <label>
-          <input class="check" type="radio" name="uo" id="uo2" value="2" />
-          Get started!
-        </label>
-      </div>
-      <a class="continue" href="./confirmation.html">
-        <button onclick="send_mail()" class="continue-btn">Continue</button>
-      </a>
+        <h1>Choose a plan that's perfect for you.</h1>
+    
+        <div class="silver">
+            <h2>Silver</h2>
+            <div class="line"></div>
+            <h3>$0*</h3>            
+            <p>For personal use.</p>
+            <p>*Free for 30 days. $10/month after trial period.</p>
+            <label>
+                <input class="check" type="radio" name="uo" id="uo0" value="0"/>
+                Get started!
+            </label>
+        </div>
+        <div class="gold">
+            <h2>Gold</h2>
+            <div class="line"></div>
+            <h3>$20/month</h3>
+            <p>Perfect for teams of 2-3 professionals and suited for small-scale projects.</p>
+            <label>
+                <input class="check" type="radio" name="uo" id="uo1" value="1"/>
+                Get started!
+            </label>
+        </div>
+        <div class="platinum">
+            <h2>Platinum</h2>
+            <div class="line"></div>
+            <h3>$50/month</h3>
+            <p>Optimal for business and large-scale projects that requires high volume file transfers.</p>
+            <label>
+                <input class="check" type="radio" name="uo" id="uo2" value="2"/>
+                Get started!
+            </label>
+        </div>
+        <a class="continue" href="./confirmation.html">
+            <button onclick="send_mail()" class="continue-btn">
+                Continue
+                <i class="fa fa-arrow-right"></i>
+            </button> 
+        </a>
     </main>
-  </body>
+    <script>$(document).ready(function () {
+    setupPricingPage();
+});</script>
+</body>
 </html>
