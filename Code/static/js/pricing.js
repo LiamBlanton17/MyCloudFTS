@@ -22,19 +22,6 @@ function validatePlan() {
 }
 
 function setupPricingPage() {
-    $("input[name='uo']").on("change", function () {
-        $(".silver, .gold, .platinum").removeClass("selected");
-
-        const selection = $(this).val();
-        if (selection === "0" ) {
-            $(".silver").addClass("selected");
-        } else if (selection === "1" ) {
-            $(".gold").addClass("selected");
-        } else if (selection === "2" ) {
-            $(".platinum").addClass("selected");
-        }
-    });
-
     $('.continue-btn').on("click", function () {
         if (!validatePlan()) {
             return;
