@@ -2,6 +2,52 @@ document.addEventListener("DOMContentLoaded", function () {
     const tabButtons = document.querySelectorAll(".tab-btn");
     const tabContents = document.querySelectorAll(".tab-content");
 
+    // Test Here 
+    // Function to get CSRF token - Move to utils folder for repeated use
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+    }
+
+    const logoutBtn = document.querySelector(".logout a");
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          fetch("/api/post/logout/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            credentials: "same-origin", // important if user is logged in
+          })
+            .then((response) => {
+              if (response.ok) {
+                window.location.href = "/login.html";
+              } else {
+                console.error("Logout failed: ", response.statusText);
+              }
+            })
+            .catch((error) => {
+              console.error("Logout error:", error);
+            });
+        });
+      }
+    // Test End
+
     tabButtons.forEach((button) => {
       button.addEventListener("click", function () {
         // Update tab button states

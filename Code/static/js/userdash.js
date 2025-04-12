@@ -1,3 +1,74 @@
+const projectModal = document.getElementById("newProjectModal");
+const memberModal = document.getElementById("addMemberModal");
+const btn = document.querySelector(".new-project-btn");
+const span = document.getElementsByClassName("close")[0];
+const memberSpan = document.querySelector(".close-member-modal");
+const logoutBtn = document.querySelector(".logout");
+
+// Prevent the logout link from navigating
+logoutBtn.addEventListener("click", function (e) {
+e.preventDefault();
+fetch("/api/post/logout/", {
+    method: "POST",
+    headers: {
+    "X-CSRFToken": getCookie("csrftoken"),
+    },
+})
+    .then((response) => {
+    if (response.ok) {
+        window.location.href = "/login.html";
+    }
+    })
+    .catch((error) => {
+    console.error("Logout failed:", error);
+    });
+});
+
+// Add this function to get CSRF token
+// This function already exists in this javascript file
+// function getCookie(name) {
+// let cookieValue = null;
+// if (document.cookie && document.cookie !== "") {
+//     const cookies = document.cookie.split(";");
+//     for (let i = 0; i < cookies.length; i++) {
+//     const cookie = cookies[i].trim();
+//     if (cookie.substring(0, name.length + 1) === name + "=") {
+//         cookieValue = decodeURIComponent(
+//         cookie.substring(name.length + 1)
+//         );
+//         break;
+//     }
+//     }
+// }
+// return cookieValue;
+// }
+
+btn.onclick = function () {
+projectModal.style.display = "block";
+};
+
+// Close project modal
+span.onclick = function () {
+projectModal.style.display = "none";
+};
+
+// Close member modal
+if (memberSpan) {
+memberSpan.onclick = function () {
+    memberModal.style.display = "none";
+};
+}
+
+// Close modals when clicking outside
+window.onclick = function (event) {
+if (event.target == projectModal) {
+    projectModal.style.display = "none";
+}
+if (event.target == memberModal) {
+    memberModal.style.display = "none";
+}
+};
+
 //django docs provided this, even though it looks wacky. Probably a library for it?
 function getCookie(name) {
     let cookieValue = null;
