@@ -22,8 +22,8 @@
     />
     <!-- Load jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/userdash.js' %}"></script>
-    <script src="{% static 'js/avatar.js' %}"></script>
+    <!-- <script src="{% static 'js/userdash.js' %}"></script>
+    <script src="{% static 'js/avatar.js' %}"></script> -->
   </head>
   <body>
     <div class="dashboard-container">
@@ -215,76 +215,7 @@
     </div>
 
     <!-- Update the script section -->
-    <script>
-      const projectModal = document.getElementById("newProjectModal");
-      const memberModal = document.getElementById("addMemberModal");
-      const btn = document.querySelector(".new-project-btn");
-      const span = document.getElementsByClassName("close")[0];
-      const memberSpan = document.querySelector(".close-member-modal");
-      const logoutBtn = document.querySelector(".logout");
-
-      // Prevent the logout link from navigating
-      logoutBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        fetch("/api/post/logout/", {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": getCookie("csrftoken"),
-          },
-        })
-          .then((response) => {
-            if (response.ok) {
-              window.location.href = "/login.html";
-            }
-          })
-          .catch((error) => {
-            console.error("Logout failed:", error);
-          });
-      });
-
-      // Add this function to get CSRF token
-      function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-          const cookies = document.cookie.split(";");
-          for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === name + "=") {
-              cookieValue = decodeURIComponent(
-                cookie.substring(name.length + 1)
-              );
-              break;
-            }
-          }
-        }
-        return cookieValue;
-      }
-
-      btn.onclick = function () {
-        projectModal.style.display = "block";
-      };
-
-      // Close project modal
-      span.onclick = function () {
-        projectModal.style.display = "none";
-      };
-
-      // Close member modal
-      if (memberSpan) {
-        memberSpan.onclick = function () {
-          memberModal.style.display = "none";
-        };
-      }
-
-      // Close modals when clicking outside
-      window.onclick = function (event) {
-        if (event.target == projectModal) {
-          projectModal.style.display = "none";
-        }
-        if (event.target == memberModal) {
-          memberModal.style.display = "none";
-        }
-      };
-    </script>
+    <script src="{% static 'js/userdash.js' %}"></script>
+    <script src="{% static 'js/avatar.js' %}"></script>
   </body>
 </html>

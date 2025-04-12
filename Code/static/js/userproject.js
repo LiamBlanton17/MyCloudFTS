@@ -1,3 +1,69 @@
+const modal = document.getElementById("newProjectModal");
+//const btn = document.querySelector(".new-project-btn");
+const span = document.getElementsByClassName("close")[0];
+const logoutBtn = document.querySelector(".logout");
+
+// Prevent the logout link from navigating
+logoutBtn.addEventListener("click", function (e) {
+e.preventDefault();
+fetch("/api/post/logout/", {
+    method: "POST",
+    headers: {
+    "X-CSRFToken": getCookie("csrftoken"),
+    },
+})
+    .then((response) => {
+    if (response.ok) {
+        window.location.href = "/login.html";
+    }
+    })
+    .catch((error) => {
+    console.error("Logout failed:", error);
+    });
+});
+
+/*
+btn.onclick = function () {
+modal.style.display = "block";
+};
+*/
+
+// Close modal
+span.onclick = function () {
+modal.style.display = "none";
+};
+
+// Close modal when clicking outside
+window.onclick = function (event) {
+if (event.target == modal) {
+    modal.style.display = "none";
+}
+};
+
+// Format dates for all file cards
+document.addEventListener("DOMContentLoaded", function () {
+const dateElements = document.querySelectorAll(".date-text");
+const formattedDate = new Date().toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+});
+
+//i need this to push again so lets see
+//i need this to push again so lets see
+//i need this to push again so lets see
+//i need this to push again so lets see
+//i need this to push again so lets see
+//i need this to push again so lets see
+//i need this to push again so lets see
+//i need this to push again so lets see
+//i need this to push again so lets see
+
+dateElements.forEach((element) => {
+    element.textContent = formattedDate;
+});
+});
+
 // Add this function to get CSRF token
 function getCookie(name) {
    let cookieValue = null;
@@ -15,6 +81,32 @@ function getCookie(name) {
   }
   return cookieValue;
 }
+
+// const logoutBtn = document.querySelector(".logout a");
+// Add logout functionality
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      fetch("/api/post/logout/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        credentials: "same-origin", // important if user is logged in
+      })
+        .then((response) => {
+          if (response.ok) {
+            window.location.href = "/login.html";
+          } else {
+            console.error("Logout failed: ", response.statusText);
+          }
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+        });
+    });
+  }
 
 $(() => {
     $('.new-file-btn').click(function(e) {

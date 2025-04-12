@@ -263,6 +263,7 @@ def update_personal_info(request):
         user.first_name = first_name
         user.last_name = last_name
         user.email = email
+        user.username = email
         user.save()
 
         return JsonResponse({
