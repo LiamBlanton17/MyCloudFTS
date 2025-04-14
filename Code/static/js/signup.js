@@ -84,6 +84,17 @@ function userBin(firstname, email){
     localStorage.setItem('email', email);
 };
 
+const bg2 = document.querySelector(".bg-2");
+let lagX=50;
+
+document.addEventListener('mousemove', (event) =>{
+   const x = ( event.clientX/window.innerWidth ) * 100;
+   lagX += (x-lagX)*0.08;
+
+   bg2.style.background = `radial-gradient(circle at ${lagX}% 100%,rgb(30, 148, 233) 0%, rgba(255, 255, 255, 0) 50%)`;
+});
+
+
 module.exports = {
     getCookie,
     validateForm,
