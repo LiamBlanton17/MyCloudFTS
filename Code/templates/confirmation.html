@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/Code/static/css/confirmation.css"/>
+    <script src="https://kit.fontawesome.com/f962903e36.js" crossorigin="anonymous"></script>
     {% load static %} 
     <link rel="stylesheet" href="{% static 'css/confirmation.css' %}">
     <!-- JS code and JQuery -->
@@ -15,13 +16,21 @@
         <a href="./landingpage.html">MyCloudFTS</a>
     </nav>
     <main class="container">
-        <svg width="200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M96 80c0-26.5 21.5-48 48-48l288 0c26.5 0 48 21.5 48 48l0 304L96 384 96 80zm313 47c-9.4-9.4-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L409 161c9.4-9.4 9.4-24.6 0-33.9zM0 336c0-26.5 21.5-48 48-48l16 0 0 128 448 0 0-128 16 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48L48 480c-26.5 0-48-21.5-48-48l0-96z"/></svg>
         <h1 id="thanks"></h1>
-        <p>Your account has been created and your subscription has been approved! A confirmation email has been sent to your inbox.</p>
+        <br><br>
+        <p>Your account has been created and your subscription has been approved. <br> A confirmation email has been sent to your inbox.</p>
         <a href="./userdash.html">
             <button >Proceed to your dashboard</button>
         </a>
     </main>
+    
+    <div class="bg-div">
+        <div class="bg-1"></div>   
+        <div class="bg-2"></div>
+        <div class="bg-3"></div>
+        <div class="bg-4"></div>
+        <div class="bg-5"></div>
+     </div> 
 </body>
 </html>
 
@@ -37,4 +46,14 @@
             setTimeout(typeWriter, speed);
         }
     }
+
+    const bg2 = document.querySelector(".bg-2");
+    let lagX=50;
+
+    document.addEventListener('mousemove', (event) =>{
+        const x = ( event.clientX/window.innerWidth ) * 100;
+        lagX += (x-lagX)*0.08;
+
+        bg2.style.background = `radial-gradient(circle at ${lagX}% 100%,rgb(30, 148, 233) 0%, rgba(255, 255, 255, 0) 50%)`;
+    });
 </script>
