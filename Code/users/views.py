@@ -530,10 +530,10 @@ def invite_to_project(request):
             raise ValueError('Project ID provided is invalid or is not owned by user attempting to share it.')
 
         # Create a key that will allow the user to join the project, and return that key
-        key = InviteKeys.createKey(user=invited_user, project=project)
+        key = InviteKeys.createKey(self=InviteKeys, user=invited_user, project=project)
 
         # Send the email for this key
-        InviteKeys.sendEmail(request=request, key=key)
+        InviteKeys.sendEmail(self=InviteKeys, request=request, key=key)
 
         return JsonResponse({'message': f'Successfully sent project invite!'}, status=200)
     except Exception as e:
@@ -550,10 +550,10 @@ def join_project(request):
             raise ValueError('No key provided.')
         
         # Validate a key - raises errors otherwise
-        InviteKeys.validateKey(key=key)
+        InviteKeys.validateKey(self=InviteKeys, key=key)
         
         # Uses the key - joins the user to the project
-        InviteKeys.useKey(key=key)
+        InviteKeys.useKey(self=InviteKeys, key=key)
 
         return JsonResponse({'message': f'Successfully joined the project!'}, status=200)
     except Exception as e:
