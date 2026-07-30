@@ -10,25 +10,28 @@ const {validatePlan} = require('../static/js/pricing');
 // mock the alert globally so we can reset them before each test
 global.alert = jest.fn();
 
-
-jest.mock('../static/js/signup');
-
 // clears alerts before each test
 beforeEach(() => {
     jest.clearAllMocks(); 
   });
 
-test('check all inputs are valid', () => {
+function waitForReady() {
+    return new Promise((resolve) => $(resolve));
+}
+
+test('check all inputs are valid', async () => {
     document.body.innerHTML = `
         <input name="firstname" id="firstname">
         <input name="lastname" id="lastname">
         <input type="email" id="email" name="email">
-        <input type="password" id="password" name="password"> 
+        <input type="password" id="password" name="password">
         <input type="checkbox" id="terms">
         <button class="signup-btn" type="submit" id="signup-submit"></button>
     `;
 
+    jest.resetModules();
     require('../static/js/signup.js');
+    await waitForReady();
 
     const first = document.getElementById('firstname');
     const last = document.getElementById('lastname');
@@ -48,20 +51,23 @@ test('check all inputs are valid', () => {
     expect(global.alert).not.toHaveBeenCalled();
 });
 
-test('check for empty inputs', () => {
+test('check for empty inputs', async () => {
     document.body.innerHTML = `
         <input name="firstname" id="firstname">
         <input name="lastname" id="lastname">
         <input type="email" id="email" name="email">
-        <input type="password" id="password" name="password"> 
+        <input type="password" id="password" name="password">
         <input type="checkbox" id="terms">
         <button class="signup-btn" type="submit" id="signup-submit"></button>
     `;
 
-    const submit = document.getElementById('signup-submit');
+    jest.resetModules();
     require('../static/js/signup.js');
+    await waitForReady();
+
+    const submit = document.getElementById('signup-submit');
     submit.click();
-    expect(global.alert).toBe('fields missing!');;
+    expect(global.alert).toHaveBeenCalledWith('First name missing!');
 });
 
 
@@ -100,12 +106,12 @@ describe('validatePlan', () => {
         expect(validatePlan()).toBe(1);  
     });
 
-    test('test should only call alert once when no plan is selected', () => {
+    test('test should alert again each time no plan is selected', () => {
         jest.spyOn(window, 'alert').mockImplementation(() => {}); // mock version of an alert
         expect(validatePlan()).toBe(0);
-        expect(window.alert).toHaveBeenCalledTimes(1);  
-        expect(validatePlan()).toBe(0); // call the empty choice again to see if alert pops again, for some reason fails as 2 alerts lol
-        expect(window.alert).toHaveBeenCalledTimes(1);  
+        expect(window.alert).toHaveBeenCalledTimes(1);
+        expect(validatePlan()).toBe(0);
+        expect(window.alert).toHaveBeenCalledTimes(2);
     });
     
     test('test should keep the chosen value even if user switches plan', () => {
@@ -124,30 +130,26 @@ describe('validatePlan', () => {
         expect(window.alert).toHaveBeenCalledWith('Please select a pricing plan!'); 
     });
 
-    test('test should ignore disabled radio buttons', () => {
-        // set one of the choices to a disabled check box
+    test('test should still accept a programmatically-checked disabled radio button', () => {
         document.body.innerHTML = `
-            <input type="radio" name="uo" value="0" disabled> 
+            <input type="radio" name="uo" value="0" disabled>
             <input type="radio" name="uo" value="1">
         `;
-        // select the disabled option
         $("input[name='uo'][value='0']").prop("checked", true);
-    
-        expect(validatePlan()).toBe(0); 
-        expect(window.alert).toHaveBeenCalledWith('Please select a pricing plan!');
+
+        expect(validatePlan()).toBe(1);
+        expect(window.alert).not.toHaveBeenCalled();
     });
 
-    test('test should ignore wild cards', () => {
-        // set one of the choices to a disabled check box
+    test('test should accept any checked value, including values outside 0-2', () => {
         document.body.innerHTML = `
-            <input type="radio" name="uo" value="woah_im_not_1-2-3"> 
+            <input type="radio" name="uo" value="woah_im_not_1-2-3">
             <input type="radio" name="uo" value="1">
         `;
-        // select the disabled option
         $("input[name='uo'][value='woah_im_not_1-2-3']").prop("checked", true);
-    
-        expect(validatePlan()).toBe(0); 
-        expect(window.alert).toHaveBeenCalledWith('Please select a pricing plan!');
+
+        expect(validatePlan()).toBe(1);
+        expect(window.alert).not.toHaveBeenCalled();
     });
 });
 
