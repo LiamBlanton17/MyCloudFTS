@@ -569,9 +569,9 @@ def rename_project(request):
     try:
         data = json.loads(request.body)
 
-        project_id = request.POST.get('project_id')
-        new_name = request.POST.get('new_name')
-        
+        project_id = data.get('project_id')
+        new_name = data.get('new_name')
+
         if not new_name or not project_id:
             return JsonResponse({'message': 'project name and/or new name required!'}, status=400)
         
